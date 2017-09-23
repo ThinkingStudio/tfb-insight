@@ -138,6 +138,12 @@ public class Analyser extends LogSupport {
         List<String> locOutput = locOutput(projectRoot);
         Map<String, Integer> locPerLang = locPerLang(locOutput);
         Integer loc = locPerLang.get(project.language.toLowerCase());
+        if (null != loc && "C".equalsIgnoreCase(project.language) || "C++".equalsIgnoreCase(project.language)) {
+            Integer headerLoc = locPerLang.get("c/c++ header");
+            if (null != headerLoc) {
+                loc += headerLoc;
+            }
+        }
         return null != loc ? loc : -1;
     }
 
@@ -145,15 +151,19 @@ public class Analyser extends LogSupport {
         Map<String, Integer> map = new HashMap<>();
         for (String line : locOutput) {
             line = line.trim();
+            if ("".equals(line)) {
+                continue;
+            }
+            if (line.contains("files") || line.contains("http:")) {
+                continue;
+            }
             if (line.startsWith("-") || line.startsWith("Language") || line.startsWith("SUM")) {
                 continue;
             }
             List<String> tokens = S.fastSplit(line, " ");
             String language = tokens.get(0).toLowerCase();
-            if ("c++".equals(language)) {
-                language = "c";
-            }
-            map.put(language, Integer.parseInt(tokens.get(tokens.size() - 1)));
+            int loc = Integer.parseInt(tokens.get(tokens.size() - 1));
+            map.put(language, loc);
         }
         return map;
     }
@@ -162,8 +172,12 @@ public class Analyser extends LogSupport {
         File src = projectRoot;
         processRubyFiles(projectRoot);
         processHHVMIncFile(projectRoot);
+        processRubyH2oMrubyFile(projectRoot);
+        processPsgiFile(projectRoot);
+        processUspFile(projectRoot);
+        String cloc = projectRoot.getAbsolutePath().contains("Groovy/") ? "cloc" : "loc";
         try {
-            Process process = Runtime.getRuntime().exec(new String[]{"loc", src.getAbsolutePath()});
+            Process process = Runtime.getRuntime().exec(new String[]{cloc, src.getAbsolutePath()});
             process.waitFor();
             return IO.readLines(process.getInputStream());
         } catch (Exception e) {
@@ -193,6 +207,20 @@ public class Analyser extends LogSupport {
     }
 
     /**
+     * It needs to rename '.conf' file to '.rb' file to count LOC correctly
+     * @param projectRoot
+     *      the project root
+     */
+    private void processRubyH2oMrubyFile(File projectRoot) {
+        if (!projectRoot.getAbsolutePath().contains("Ruby/h2o_mruby")) {
+            return;
+        }
+        File file = new File(projectRoot, "h2o.conf");
+        File newFile = new File(projectRoot, "h2o.rb");
+        IO.copyDirectory(file, newFile);
+    }
+
+    /**
      * It needs to rename '.php.inc' file to '.php' file to count LOC correctly
      * @param projectRoot
      *      the project root
@@ -208,6 +236,50 @@ public class Analyser extends LogSupport {
             } else if (file.getName().endsWith(".php.inc")) {
                 String fileName = file.getName();
                 String newFileName = S.beforeLast(fileName, ".inc");
+                File newFile = new File(file.getParentFile(), newFileName);
+                IO.copyDirectory(file, newFile);
+            }
+        }
+    }
+
+    /**
+     * It needs to rename '.psgi' file to '.pl' file to count LOC correctly
+     * @param projectRoot
+     *      the project root
+     */
+    private void processPsgiFile(File projectRoot) {
+        if (!projectRoot.getAbsolutePath().contains("Perl/plack")) {
+            return;
+        }
+        File[] files = projectRoot.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                processPsgiFile(file);
+            } else if (file.getName().endsWith(".psgi")) {
+                String fileName = file.getName();
+                String newFileName = fileName + ".pl";
+                File newFile = new File(file.getParentFile(), newFileName);
+                IO.copyDirectory(file, newFile);
+            }
+        }
+    }
+
+    /**
+     * It needs to rename '.usp' file to '.cpp' file to count LOC correctly
+     * @param projectRoot
+     *      the project root
+     */
+    private void processUspFile(File projectRoot) {
+        if (!projectRoot.getAbsolutePath().contains("C++/ulib")) {
+            return;
+        }
+        File[] files = projectRoot.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                processUspFile(file);
+            } else if (file.getName().endsWith(".usp")) {
+                String fileName = file.getName();
+                String newFileName = fileName + ".cpp";
                 File newFile = new File(file.getParentFile(), newFileName);
                 IO.copyDirectory(file, newFile);
             }
