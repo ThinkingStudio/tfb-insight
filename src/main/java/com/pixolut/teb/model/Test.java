@@ -1,5 +1,6 @@
 package com.pixolut.teb.model;
 
+import act.Act;
 import act.app.conf.AutoConfig;
 import act.data.annotation.Data;
 import act.util.SimpleBean;
@@ -57,6 +58,19 @@ public class Test implements SimpleBean {
         };
 
         public abstract Map<String, List<Result>> fetch(Result.RawData rawData);
+
+        public float densityWeight() {
+            String s = (String) Act.appConfig().get("density." + name());
+            return Float.parseFloat(s);
+        }
+    }
+
+    public enum Classification {
+        Fullstack, Micro, Platform
+    }
+
+    public enum Approach {
+        Realistic, Stripped
     }
 
     /**
@@ -152,7 +166,10 @@ public class Test implements SimpleBean {
     public String language;
     public String orm;
     public String os;
-    public String classification;
+    public String platform;
+    public String webserver;
+    public Classification classification;
+    public Approach approach;
 
     public Map<Type, List<Result>> results = new HashMap<>();
     public Map<Type, Result> bestResult = new HashMap<>();

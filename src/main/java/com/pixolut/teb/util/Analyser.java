@@ -82,7 +82,7 @@ public class Analyser extends LogSupport {
                 continue;
             }
             Project project = doAnalyse(projectRoot);
-            if (null != project) {
+            if (null != project && project.hasEffectiveTests()) {
                 processTestResult(project, rawReport);
                 projects.add(project);
             }
@@ -104,6 +104,7 @@ public class Analyser extends LogSupport {
                 }
             }
         }
+        project.calculateDensity();
     }
 
     private String testKey(String framework, Test test) {
@@ -117,7 +118,7 @@ public class Analyser extends LogSupport {
 
     private Project doAnalyse(File projectRoot) {
         Project project = readConfig(projectRoot);
-        if (null != project) {
+        if (null != project && project.hasEffectiveTests()) {
             project.loc = countLoc(projectRoot, project);
         }
         return project;
@@ -158,10 +159,9 @@ public class Analyser extends LogSupport {
     }
 
     private List<String> locOutput(File projectRoot) {
-        File src = new File(projectRoot, "src");
-        if (!src.isDirectory()) {
-            src = projectRoot;
-        }
+        File src = projectRoot;
+        processRubyFiles(projectRoot);
+        processHHVMIncFile(projectRoot);
         try {
             Process process = Runtime.getRuntime().exec(new String[]{"loc", src.getAbsolutePath()});
             process.waitFor();
@@ -170,6 +170,48 @@ public class Analyser extends LogSupport {
             logger.warn(e, "Error count source code lines");
         }
         return C.list();
+    }
+
+    /**
+     * It needs to rename `.ru` file to `.rb` file to count LOC correctly
+     * @param projectRoot
+     *      the project root
+     */
+    private void processRubyFiles(File projectRoot) {
+        if (!projectRoot.getAbsolutePath().contains("/Ruby/")) {
+            return;
+        }
+        File[] files = projectRoot.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                processRubyFiles(file);
+            } else if (file.getName().endsWith(".ru")) {
+                File newFile = new File(file.getParentFile(), file.getName() + ".rb");
+                IO.copyDirectory(file, newFile);
+            }
+        }
+    }
+
+    /**
+     * It needs to rename '.php.inc' file to '.php' file to count LOC correctly
+     * @param projectRoot
+     *      the project root
+     */
+    private void processHHVMIncFile(File projectRoot) {
+        if (!projectRoot.getAbsolutePath().contains("PHP/hhvm")) {
+            return;
+        }
+        File[] files = projectRoot.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                processHHVMIncFile(file);
+            } else if (file.getName().endsWith(".php.inc")) {
+                String fileName = file.getName();
+                String newFileName = S.beforeLast(fileName, ".inc");
+                File newFile = new File(file.getParentFile(), newFileName);
+                IO.copyDirectory(file, newFile);
+            }
+        }
     }
 
     public static void main(String[] args) {
