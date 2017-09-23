@@ -1,15 +1,22 @@
 package com.pixolut.teb.util;
 
+import act.Act;
+import act.app.conf.AutoConfig;
 import act.cli.Command;
+import act.cli.Optional;
 import act.util.LogSupport;
 import com.alibaba.fastjson.JSON;
 import com.pixolut.teb.model.BenchmarkConfig;
 import com.pixolut.teb.model.Project;
-import org.osgl.util.C;
-import org.osgl.util.IO;
-import org.osgl.util.S;
+import com.pixolut.teb.model.Test;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.osgl.$;
+import org.osgl.util.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +26,13 @@ import javax.inject.Inject;
 /**
  * Analyse TEB workspace and generate project data.
  */
+@AutoConfig
 public class Analyser extends LogSupport {
+
+    /**
+     * Where to fetch performance data.
+     */
+    public static final Const<String> PERF_URL = $.constant("https://www.techempower.com/benchmarks/previews/round15/results/round15/ph.json");
 
     @Inject
     private Project.Service projectService;
@@ -27,23 +40,79 @@ public class Analyser extends LogSupport {
     @Inject
     private Workspace.Loader workspaceLoader;
 
+    /**
+     * Run analysis over workspace.
+     *
+     * This will generate project data from the workspace.
+     * If there are project data generated already, this
+     * method will return immediately unless `force` parameter
+     * is `true`, in which case the old data will be wiped out
+     *
+     * @param force
+     *      if `true` then force run analysis and wipe out
+     *      existing data if there is any
+     */
     @Command(name = "analyse", help = "run analyse on all TEB projects")
-    public void doAnalyse() {
-        List<Project> projects = doAnalyze(workspaceLoader.load());
+    public void doAnalyse(@Optional("force run analysis and wipe out old data") boolean force) {
+        if (!force && projectService.count() > 0) {
+            return;
+        }
+        Test.Result.RawReport rawReport = fetchRawReport();
+        List<Project> projects = doAnalyze(workspaceLoader.load(), rawReport);
         projectService.drop();
         projectService.save(projects);
     }
 
-    private List<Project> doAnalyze(Workspace workspace) {
+    private Test.Result.RawReport fetchRawReport() {
+        OkHttpClient http = new OkHttpClient.Builder().build();
+        try {
+            Response resp = http.newCall(new Request.Builder().url(PERF_URL.get()).get().build()).execute();
+            return JSON.parseObject(resp.body().string(), Test.Result.RawReport.class);
+        } catch (IOException e) {
+            throw E.ioException(e);
+        }
+    }
+
+    private List<Project> doAnalyze(Workspace workspace, Test.Result.RawReport rawReport) {
         List<File> projectRoots = workspace.projectDirs();
         List<Project> projects = new ArrayList<>(projectRoots.size());
         for (File projectRoot : projectRoots) {
+            if (!projectRoot.isDirectory()) {
+                // skip README file
+                continue;
+            }
             Project project = doAnalyse(projectRoot);
             if (null != project) {
+                processTestResult(project, rawReport);
                 projects.add(project);
             }
         }
         return projects;
+    }
+
+    private void processTestResult(Project project, Test.Result.RawReport rawReport) {
+        String framework = project.framework;
+        Test.Result.RawData rawData = rawReport.rawData;
+        for (Test test : project.tests) {
+            String key = testKey(framework, test);
+            for (Test.Type type : Test.Type.values()) {
+                Map<String, List<Test.Result>> results = type.fetch(rawData);
+                List<Test.Result> testResults = results.get(key);
+                if (null != testResults) {
+                    test.results.put(type, testResults);
+                    test.bestResult.put(type, Test.Result.bestOf(testResults));
+                }
+            }
+        }
+    }
+
+    private String testKey(String framework, Test test) {
+        String name = test.name;
+        String mapped = (String) Act.appConfig().get(S.pathConcat(framework, '.', name));
+        if (null != mapped) {
+            name = mapped;
+        }
+        return ("default".equals(name)) ? framework : S.pathConcat(framework, '-', name);
     }
 
     private Project doAnalyse(File projectRoot) {
@@ -104,10 +173,8 @@ public class Analyser extends LogSupport {
     }
 
     public static void main(String[] args) {
-        File file = new File("/home/luog/p/TEB/frameworks/Java/act/benchmark_config.json");
-        String s = IO.readContentAsString(file);
-        BenchmarkConfig config = JSON.parseObject(s, BenchmarkConfig.class);
-        System.out.println(JSON.toJSONString(config));
+        Test.Result.RawReport report = new Analyser().fetchRawReport();
+        System.out.println(report);
     }
 
 }

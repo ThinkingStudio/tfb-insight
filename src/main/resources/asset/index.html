@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>lbb-admin</title>
+  <link rel="stylesheet" href="/asset/css/pickmeup.css" type="text/css" />
+  <link rel="stylesheet" href="/asset/css/app.css" type="text/css"/>
+  <link rel="stylesheet" href="/asset/fa/css/font-awesome.min.css" type="text/css"/>
+</head>
+<body>
+<h1 class="header">TEB - Data Analyser</h1>
+<menu></menu>
+<main></main>
+<script src="/~/asset/js/jquery.js"></script>
+<script src="/~/asset/js/jquery.ext.js"></script>
+<script src="/~/asset/js/riotjs.js"></script>
+<script>
+    var Store = function () {
+        riot.observable(this)
+    }
+    riot.store = new Store()
+    riot.mount('*');
+</script>
+</body>
+</html>

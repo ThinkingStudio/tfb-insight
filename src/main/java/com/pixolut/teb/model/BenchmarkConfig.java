@@ -10,6 +10,6 @@ import java.util.Map;
 public class BenchmarkConfig implements SimpleBean {
 
     public String framework;
-    public List<Map<String, TestConfig>> tests;
+    public List<Map<String, Test>> tests;
 
 }
