@@ -1,6 +1,13 @@
-# ActFramework HelloWorld Demo
+# TEB project analyser
 
-This application demonstrates how to use write a simplest HelloWorld application using  actframework application
+This application analyser [TEB projects](https://github.com/TechEmpower/FrameworkBenchmarks/) and generate detail comparison between frameworks
+
+## Prerequisite
+
+Make sure you have the following system command ready for use:
+
+1. git - download from https://git-scm.com/downloads
+2. loc - download from https://github.com/cgag/loc
 
 ## Start the application
 
@@ -19,54 +26,20 @@ unzip *
 ./start
 ```
 
-Once application has been started, you can open browser and locate to `http://localhost:5460` get the home page.
+## Prepare workspace for analysis
 
-## Understanding the Demo app
+Enter the CLI mode:
 
-The demo application contains a single Java class `demo.helloworld.HelloWorldApp`
+```bash
+nc localhost 5461
+``` 
 
-```java
-public class HelloWorldApp {
+Type `workspace.load`
 
-    @GetAction
-    public void home(@DefaultValue("World") @Output String who) {
-    }
+This above command will fetch the TEB repository from github for the first time
 
-    public static void main(String[] args) throws Exception {
-        Act.start();
-    }
+## Do analysis
 
-}
-```
+Enter the CLI mode and type `analyse`
 
-The main method call `act.Act.start()` method to bootstrap ActFramework and load this application:
-
-### Action handler
-
-The `HelloWorldApp` class contains one action handler method:
-
-```java
-    @GetAction
-    public void home(@DefaultValue("World") @Output String who) {
-    }
-```
-
-`@GetAction` annotation without parameter tells ActFramework that this method is a handler that answers request sent to `/`. 
-
-Parameter `String who` tells ActFramework that if there is a request parameter named `who` the value shall be inject to this parameter when calling to this handler method.
-
-The `@Output` annotation before `String who` tells ActFramework to put the value of `who` to the template using name `who`.
-
-The template `home.html` is located at `resources/rythm/demo/helloworld/HelloWorldApp`. Literally the path is corresponding to the package/class/method hierarchy, based in `resources/rythm` template root.
- 
-The template is created using [Rythm Engine](http://rythmengine.org). For more information about Rythm engine, please visit the official site at http://rythmenigne.org
- 
-## FAQ
-
-**Question**: Why do I get the following error message ?
-
-`Cannot encrypt/decrypt! Please download Java Crypto Extension pack from Oracle`
-
-**Answer**: Please download and install the JCE pack from Oracle for
-[Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html) or 
-[Java 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
+The above command will run analysis on all TEB projects 
