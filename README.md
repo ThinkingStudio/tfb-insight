@@ -43,3 +43,7 @@ This above command will fetch the TEB repository from github for the first time
 Enter the CLI mode and type `analyse`
 
 The above command will run analysis on all TEB projects 
+
+## View report
+
+TBD
