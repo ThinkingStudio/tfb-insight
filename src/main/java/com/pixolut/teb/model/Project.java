@@ -98,7 +98,7 @@ public class Project extends MorphiaAdaptiveRecord<Project> {
     }
 
     @Stateless
-    public static class Service extends MorphiaDao<Project> {
+    public static class Dao extends MorphiaDao<Project> {
     }
 
 

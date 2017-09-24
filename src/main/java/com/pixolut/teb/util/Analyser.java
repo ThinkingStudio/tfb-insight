@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.pixolut.teb.model.BenchmarkConfig;
 import com.pixolut.teb.model.Project;
 import com.pixolut.teb.model.Test;
+import com.pixolut.teb.model.TestType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -35,7 +36,7 @@ public class Analyser extends LogSupport {
     public static final Const<String> PERF_URL = $.constant("https://www.techempower.com/benchmarks/previews/round15/results/round15/ph.json");
 
     @Inject
-    private Project.Service projectService;
+    private Project.Dao projectService;
 
     @Inject
     private Workspace.Loader workspaceLoader;
@@ -95,12 +96,15 @@ public class Analyser extends LogSupport {
         Test.Result.RawData rawData = rawReport.rawData;
         for (Test test : project.tests) {
             String key = testKey(framework, test);
-            for (Test.Type type : Test.Type.values()) {
+            for (TestType type : TestType.values()) {
+                if (type == TestType.density) {
+                    continue;
+                }
                 Map<String, List<Test.Result>> results = type.fetch(rawData);
                 List<Test.Result> testResults = results.get(key);
                 if (null != testResults) {
                     test.results.put(type, testResults);
-                    test.bestResult.put(type, Test.Result.bestOf(testResults));
+                    test.bestResult.put(type, type.pickOne(testResults));
                 }
             }
         }
@@ -138,8 +142,9 @@ public class Analyser extends LogSupport {
         List<String> locOutput = locOutput(projectRoot);
         Map<String, Integer> locPerLang = locPerLang(locOutput);
         Integer loc = locPerLang.get(project.language.toLowerCase());
-        if (null != loc && "C".equalsIgnoreCase(project.language) || "C++".equalsIgnoreCase(project.language)) {
-            Integer headerLoc = locPerLang.get("c/c++ header");
+        if (null != loc && ("C".equalsIgnoreCase(project.language) || "C++".equalsIgnoreCase(project.language))) {
+            // fetch the "c/c++ header" line
+            Integer headerLoc = locPerLang.get("c/c++");
             if (null != headerLoc) {
                 loc += headerLoc;
             }

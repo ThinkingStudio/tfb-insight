@@ -1,6 +1,5 @@
 package com.pixolut.teb.model;
 
-import act.Act;
 import act.app.conf.AutoConfig;
 import act.data.annotation.Data;
 import act.util.SimpleBean;
@@ -15,55 +14,6 @@ import java.util.Map;
 @Data
 @AutoConfig
 public class Test implements SimpleBean {
-
-    /**
-     * The test types.
-     */
-    public enum Type {
-        db() {
-            @Override
-            public Map<String, List<Result>> fetch(Result.RawData rawData) {
-                return rawData.db;
-            }
-        },
-        fortune() {
-            @Override
-            public Map<String, List<Result>> fetch(Result.RawData rawData) {
-                return rawData.fortune;
-            }
-        },
-        json() {
-            @Override
-            public Map<String, List<Result>> fetch(Result.RawData rawData) {
-                return rawData.json;
-            }
-        },
-        plaintext() {
-            @Override
-            public Map<String, List<Result>> fetch(Result.RawData rawData) {
-                return rawData.plaintext;
-            }
-        },
-        query() {
-            @Override
-            public Map<String, List<Result>> fetch(Result.RawData rawData) {
-                return rawData.query;
-            }
-        },
-        update() {
-            @Override
-            public Map<String, List<Result>> fetch(Result.RawData rawData) {
-                return rawData.update;
-            }
-        };
-
-        public abstract Map<String, List<Result>> fetch(Result.RawData rawData);
-
-        public float densityWeight() {
-            String s = (String) Act.appConfig().get("density." + name());
-            return Float.parseFloat(s);
-        }
-    }
 
     public enum Classification {
         Fullstack, Micro, Platform
@@ -171,6 +121,6 @@ public class Test implements SimpleBean {
     public Classification classification;
     public Approach approach;
 
-    public Map<Type, List<Result>> results = new HashMap<>();
-    public Map<Type, Result> bestResult = new HashMap<>();
+    public Map<TestType, List<Result>> results = new HashMap<>();
+    public Map<TestType, Result> bestResult = new HashMap<>();
 }

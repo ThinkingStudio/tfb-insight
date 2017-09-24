@@ -2,6 +2,7 @@ package com.pixolut.teb.util;
 
 import com.pixolut.teb.model.Project;
 import com.pixolut.teb.model.Test;
+import com.pixolut.teb.model.TestType;
 import org.osgl.$;
 
 import java.util.HashSet;
@@ -48,17 +49,17 @@ public class DensityCalculator {
         float totalWeight = 0;
         int json = 0;
         int plaintext = 0;
-        Set<$.T2<Test.Type, String>> typeAndDb = new HashSet<>();
+        Set<$.T2<TestType, String>> typeAndDb = new HashSet<>();
         for (Test test : project.tests) {
-            for (Test.Type type : test.bestResult.keySet()) {
-                if (type == Test.Type.json && json++ > 0) {
+            for (TestType type : test.bestResult.keySet()) {
+                if (type == TestType.json && json++ > 0) {
                     continue;
                 }
-                if (type == Test.Type.plaintext && plaintext++ > 0) {
+                if (type == TestType.plaintext && plaintext++ > 0) {
                     continue;
                 }
-                if (type != Test.Type.json && type != Test.Type.plaintext) {
-                    $.T2<Test.Type, String> key = $.T2(type, test.database);
+                if (type != TestType.json && type != TestType.plaintext) {
+                    $.T2<TestType, String> key = $.T2(type, test.database);
                     if (typeAndDb.contains(key)) {
                         continue;
                     }

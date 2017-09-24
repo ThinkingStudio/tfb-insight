@@ -3,17 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <title>lbb-admin</title>
-  <link rel="stylesheet" href="/asset/css/pickmeup.css" type="text/css" />
   <link rel="stylesheet" href="/asset/css/app.css" type="text/css"/>
   <link rel="stylesheet" href="/asset/fa/css/font-awesome.min.css" type="text/css"/>
+  <style>
+    nav {
+      position: fixed;
+      top: 100px;
+      bottom: 10px;
+      padding: 20px;
+      float: left;
+      width: 300px;
+      border-right: 1px solid;
+      overflow-y: auto;
+    }
+  </style>
 </head>
 <body>
-<h1 class="header">TEB - Data Analyser</h1>
-<menu></menu>
-<main></main>
+<h1 class="header">TEB - Data Visualiser</h1>
+<div class="body">
+  <nav></nav>
+  <main></main>
+</div>
 <script src="/~/asset/js/jquery.js"></script>
 <script src="/~/asset/js/jquery.ext.js"></script>
+<script src="/asset/js/chart.js"></script>
 <script src="/~/asset/js/riotjs.js"></script>
+<script type="riot/tag" src="/asset/tag/nav.tag"></script>
+<script type="riot/tag" src="/asset/tag/nav-framework.tag"></script>
+<script type="riot/tag" src="/asset/tag/nav-top-n.tag"></script>
+<script type="riot/tag" src="/asset/tag/main.tag"></script>
 <script>
     var Store = function () {
         riot.observable(this)
