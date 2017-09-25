@@ -27,7 +27,6 @@
             $.getJSON('/api/v1/framework', function(data) {
                 self.frameworks = data
                 self.update()
-                console.log(self.frameworks)
             })
         }
         toggleLanguage(e) {

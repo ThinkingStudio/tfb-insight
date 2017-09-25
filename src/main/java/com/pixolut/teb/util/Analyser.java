@@ -6,10 +6,7 @@ import act.cli.Command;
 import act.cli.Optional;
 import act.util.LogSupport;
 import com.alibaba.fastjson.JSON;
-import com.pixolut.teb.model.BenchmarkConfig;
-import com.pixolut.teb.model.Project;
-import com.pixolut.teb.model.Test;
-import com.pixolut.teb.model.TestType;
+import com.pixolut.teb.model.*;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -62,6 +59,7 @@ public class Analyser extends LogSupport {
         List<Project> projects = doAnalyze(workspaceLoader.load(), rawReport);
         projectService.drop();
         projectService.save(projects);
+        LanguageBenchmark.calculateLanguageBenchmark();
     }
 
     private Test.Result.RawReport fetchRawReport() {

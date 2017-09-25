@@ -4,8 +4,10 @@ import act.db.morphia.MorphiaAdaptiveRecord;
 import act.db.morphia.MorphiaDao;
 import act.util.Stateless;
 import com.alibaba.fastjson.JSON;
+import com.pixolut.teb.util.ColorCaculator;
 import com.pixolut.teb.util.DensityCalculator;
 import org.mongodb.morphia.annotations.Entity;
+import org.osgl.$;
 import org.osgl.util.C;
 import org.osgl.util.E;
 import org.osgl.util.S;
@@ -42,11 +44,16 @@ public class Project extends MorphiaAdaptiveRecord<Project> {
     public int loc;
     public String language;
     public String projectRoot;
-    public float density;
+    public String color;
+    public Float density;
 
     public Project(BenchmarkConfig config, File projectRoot) {
         this.projectRoot = projectRoot.getAbsolutePath();
         this.init(config);
+    }
+
+    public String getLabel() {
+        return S.concat("[", language, "] ", framework);
     }
 
     public void calculateDensity() {
@@ -55,6 +62,25 @@ public class Project extends MorphiaAdaptiveRecord<Project> {
 
     public boolean hasEffectiveTests() {
         return !tests.isEmpty();
+    }
+
+    public $.T2<Test, Test.Result> bestOf(TestType testType) {
+        Test.Result theResult = null;
+        Test theTest = null;
+        for (Test test : tests) {
+            Test.Result testResult = test.bestResult.get(testType);
+            if (null == testResult) {
+                continue;
+            }
+            if (null == theResult) {
+                theResult = testResult;
+                theTest = test;
+            } else if (testResult.isBetterThan(theResult)) {
+                theResult = testResult;
+                theTest = test;
+            }
+        }
+        return $.T2(theTest, theResult);
     }
 
     private void init(BenchmarkConfig config) {
@@ -86,6 +112,14 @@ public class Project extends MorphiaAdaptiveRecord<Project> {
         }
         this.classification = this.tests.get(0).classification;
         this.technology = findTechnologyByLanguage(language);
+        this.updateColors();
+    }
+
+    private void updateColors() {
+        this.color = ColorCaculator.colorOf(this);
+        for (Test test : tests) {
+            test.color = ColorCaculator.colorOf(this, test);
+        }
     }
 
     private Technology findTechnologyByLanguage(String language) {

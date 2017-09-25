@@ -3,12 +3,11 @@ package com.pixolut.teb;
 import act.controller.annotation.UrlContext;
 import act.db.morphia.MorphiaQuery;
 import act.inject.DefaultValue;
-import com.pixolut.teb.model.ChartData;
-import com.pixolut.teb.model.Project;
-import com.pixolut.teb.model.Test;
-import com.pixolut.teb.model.TestType;
+import com.pixolut.teb.model.*;
+import com.pixolut.teb.util.ColorCaculator;
+import org.osgl.$;
 import org.osgl.mvc.annotation.GetAction;
-import org.osgl.util.E;
+import org.osgl.util.C;
 import org.osgl.util.S;
 
 import java.util.*;
@@ -67,19 +66,19 @@ public class DataService {
     }
 
     /**
-     * Query chart data.
+     * Query chart data for framework benchmark
      *
      * @return
-     *      chart data
+     *      chart framework benchmark data
      */
-    @GetAction("chart")
-    public ChartData chart(
+    @GetAction("chart/framework")
+    public ChartData frameworkBenchmark(
             @NotNull TestType test,
             String language,
             String technology,
             Test.Classification classification,
             String orm,
-            @DefaultValue("10") int top
+            @DefaultValue("20") Integer top
     ) {
         MorphiaQuery<Project> query = projectDao.q();
         query = test.applyTo(query);
@@ -92,15 +91,62 @@ public class DataService {
             query.filter("classification", classification);
         }
         if (S.notBlank(orm)) {
-            query.filter("orm", Pattern.compile(orm, Pattern.CASE_INSENSITIVE));
+            query.filter("tests.orm", Pattern.compile(orm, Pattern.CASE_INSENSITIVE));
         }
         query.limit(top);
-        List<Project> projects = query.fetchAsList();
-        ChartData data = new ChartData();
-        data.datasets = new TreeSet<>();
-        for (Project project : projects) {
-
+        C.List<Project> projects = C.list(query.fetchAsList());
+        if (test == TestType.density) {
+            return codeDensity(projects);
         }
-        throw E.tbd();
+        SortedMap<Number, $.T2<String, String>> chartData = new TreeMap<>(Collections.reverseOrder());
+
+        for (Project project : projects) {
+            $.T2<Test, Test.Result> best = project.bestOf(test);
+            if (null == best._2) {
+                continue;
+            }
+            String backgroundColor = best._1.color;
+            String label = test.label(project, best._1);
+            chartData.put(best._2.throughput(), $.T2(label, backgroundColor));
+        }
+        ChartData data = new ChartData(C.list(chartData.values()).map((t2) -> t2._1));
+        data.datasets = new ArrayList<>();
+        ChartData.Dataset dataset = new ChartData.Dataset("", C.list(chartData.keySet()), C.list(chartData.values()).map((t2) -> t2._2));
+        data.datasets.add(dataset);
+        return data;
+    }
+
+    /**
+     * Query chart data for language benchmark
+     *
+     * @return
+     *      chart language benchmark data
+     */
+    @GetAction("chart/language")
+    public ChartData languageBenchmark(
+            @NotNull TestType test,
+            LanguageBenchmark.Dao dao
+    ) {
+        C.List<LanguageBenchmark> benchmarks = C.list(dao.q("test", test).orderBy("-avg").fetchAsList());
+        ChartData data = new ChartData(benchmarks.map((lb) -> lb.language));
+        data.datasets = new ArrayList<>();
+
+        List<String> avgBackgroundColors = benchmarks.map((lb) -> {return ColorCaculator.colorOf(lb.language, false);});
+        ChartData.Dataset avg = new ChartData.Dataset("average", benchmarks.map((lb) -> lb.avg), avgBackgroundColors);
+        data.datasets.add(avg);
+
+        List<String> topBackgroundColors = benchmarks.map((lb) -> {return ColorCaculator.colorOf(lb.language, true);});
+        ChartData.Dataset top = new ChartData.Dataset("top", benchmarks.map((lb) -> lb.top), topBackgroundColors);
+        data.datasets.add(top);
+        return data;
+    }
+
+    private ChartData codeDensity(List<Project> projects) {
+        List<Float> densities = C.list(projects).map((p) -> p.density).filter((n) -> n > 0);
+        projects = C.list(projects).take(densities.size());
+        ChartData chartData = new ChartData(C.list(projects).map(Project::getLabel));
+        chartData.datasets = new ArrayList<>();
+        chartData.datasets.add(new ChartData.Dataset("", densities, C.list(projects).map((p) -> p.color)));
+        return chartData;
     }
 }

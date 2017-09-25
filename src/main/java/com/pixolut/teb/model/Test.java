@@ -82,6 +82,10 @@ public class Test implements SimpleBean {
             return o.totalRequests - totalRequests;
         }
 
+        public boolean isBetterThan(Result o) {
+            return totalRequests > o.totalRequests;
+        }
+
         /**
          * Number of requests processed per seconds
          *
@@ -120,7 +124,9 @@ public class Test implements SimpleBean {
     public String webserver;
     public Classification classification;
     public Approach approach;
+    public String color;
 
     public Map<TestType, List<Result>> results = new HashMap<>();
     public Map<TestType, Result> bestResult = new HashMap<>();
+
 }

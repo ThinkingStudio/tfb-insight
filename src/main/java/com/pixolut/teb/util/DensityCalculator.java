@@ -50,6 +50,7 @@ public class DensityCalculator {
         int json = 0;
         int plaintext = 0;
         Set<$.T2<TestType, String>> typeAndDb = new HashSet<>();
+        boolean counted = false;
         for (Test test : project.tests) {
             for (TestType type : test.bestResult.keySet()) {
                 if (type == TestType.json && json++ > 0) {
@@ -66,9 +67,10 @@ public class DensityCalculator {
                     typeAndDb.add(key);
                 }
                 totalWeight += type.densityWeight();
+                counted = true;
             }
         }
-        return totalWeight * 100F / project.loc;
+        return !counted ? -1.0f : totalWeight * 100F / project.loc;
     }
 
 }

@@ -3,6 +3,7 @@ package com.pixolut.teb.model;
 import act.Act;
 import act.db.morphia.MorphiaQuery;
 import org.osgl.util.E;
+import org.osgl.util.S;
 
 import java.util.List;
 import java.util.Map;
@@ -69,6 +70,11 @@ public enum TestType {
     },
     density() {
         @Override
+        public MorphiaQuery<Project> applyTo(MorphiaQuery<Project> query) {
+            return query.orderBy("-density");
+        }
+
+        @Override
         public Map<String, List<Test.Result>> fetch(Test.Result.RawData rawData) {
             throw E.unsupport();
         }
@@ -90,10 +96,11 @@ public enum TestType {
     }
 
     public String label(Project project, Test test) {
+        S.Buffer buf = S.buffer("[").append(project.language).append("] ").append(project.framework);
         if (!isDbTest()) {
-            return project.framework;
+            return buf.toString();
         }
-        return project.framework + " with " + test.database;
+        return buf.append(" | ").append(test.database).toString();
     }
 
     public float densityWeight() {
