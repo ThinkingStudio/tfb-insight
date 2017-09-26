@@ -1,11 +1,11 @@
-package com.pixolut.teb.model;
+package com.pixolut.tfb_insight.model;
 
 import act.db.morphia.MorphiaAdaptiveRecord;
 import act.db.morphia.MorphiaDao;
 import act.util.Stateless;
 import com.alibaba.fastjson.JSON;
-import com.pixolut.teb.util.ColorCaculator;
-import com.pixolut.teb.util.DensityCalculator;
+import com.pixolut.tfb_insight.util.ColorCaculator;
+import com.pixolut.tfb_insight.util.DensityCalculator;
 import org.mongodb.morphia.annotations.Entity;
 import org.osgl.$;
 import org.osgl.util.C;

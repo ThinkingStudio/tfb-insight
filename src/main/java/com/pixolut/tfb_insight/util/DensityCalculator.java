@@ -1,8 +1,8 @@
-package com.pixolut.teb.util;
+package com.pixolut.tfb_insight.util;
 
-import com.pixolut.teb.model.Project;
-import com.pixolut.teb.model.Test;
-import com.pixolut.teb.model.TestType;
+import com.pixolut.tfb_insight.model.Project;
+import com.pixolut.tfb_insight.model.Test;
+import com.pixolut.tfb_insight.model.TestType;
 import org.osgl.$;
 
 import java.util.HashSet;

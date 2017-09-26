@@ -1,4 +1,4 @@
-package com.pixolut.teb.util;
+package com.pixolut.tfb_insight.util;
 
 import act.cli.Command;
 import org.osgl.$;
@@ -94,7 +94,7 @@ public class Workspace {
 
         private File createTmpDir() {
             try {
-                return Files.createTempDirectory("teb").toFile();
+                return Files.createTempDirectory("tfb_insight").toFile();
             } catch (IOException e) {
                 throw E.ioException(e);
             }

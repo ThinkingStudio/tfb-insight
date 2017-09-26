@@ -1,4 +1,4 @@
-package com.pixolut.teb.model;
+package com.pixolut.tfb_insight.model;
 
 import act.Act;
 import act.db.morphia.MorphiaQuery;

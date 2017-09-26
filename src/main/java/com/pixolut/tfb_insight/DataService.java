@@ -1,10 +1,10 @@
-package com.pixolut.teb;
+package com.pixolut.tfb_insight;
 
 import act.controller.annotation.UrlContext;
 import act.db.morphia.MorphiaQuery;
 import act.inject.DefaultValue;
-import com.pixolut.teb.model.*;
-import com.pixolut.teb.util.ColorCaculator;
+import com.pixolut.tfb_insight.model.*;
+import com.pixolut.tfb_insight.util.ColorCaculator;
 import org.osgl.$;
 import org.osgl.mvc.annotation.GetAction;
 import org.osgl.util.C;

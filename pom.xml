@@ -19,12 +19,12 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.pixolut.teb</groupId>
-  <artifactId>teb-analyser</artifactId>
+  <groupId>com.pixolut</groupId>
+  <artifactId>tfb-insight</artifactId>
   <version>1.0.0</version>
 
-  <name>TEB Analyser</name>
-  <description>Analyse TechEmpower Benchmark projects</description>
+  <name>TFB Insight</name>
+  <description>Analyse TechEmpower Benchmark data and provides visual insight into it</description>
   <url>http://thinking.group/</url>
 
   <properties>
@@ -45,7 +45,7 @@
     <act.version>1.4.13-SNAPSHOT</act.version>
     <act-morphia.version>1.2.1</act-morphia.version>
 
-    <app.entry>com.pixolut.teb.AppEntry</app.entry>
+    <app.entry>com.pixolut.tfb_insight.AppEntry</app.entry>
   </properties>
 
   <scm>

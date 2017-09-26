@@ -1,4 +1,4 @@
-package com.pixolut.teb.model;
+package com.pixolut.tfb_insight.model;
 
 import act.data.annotation.Data;
 import act.util.SimpleBean;

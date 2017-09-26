@@ -1,4 +1,4 @@
-package com.pixolut.teb;
+package com.pixolut.tfb_insight;
 
 import act.Act;
 
