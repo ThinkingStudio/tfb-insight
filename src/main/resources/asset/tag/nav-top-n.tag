@@ -43,7 +43,7 @@
                 technology: 'DOT_NET'
             },
             {
-                label: 'Language vs Language',
+                label: 'Language Insight',
                 target: 'language'
             }
         ]

@@ -23,7 +23,61 @@
         }
     </style>
     <script>
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
         Chart.defaults.global.defaultFontColor = '#fff';
+        Chart.plugins.register({
+            afterDatasetsDraw: function(chart, easing) {
+                // To only draw at the end of animation, check for easing === 1
+                var ctx = chart.ctx;
+                chart.data.datasets.forEach(function (dataset, i) {
+                    var meta = chart.getDatasetMeta(i);
+                    if (!meta.hidden) {
+                        meta.data.forEach(function(element, index) {
+                            // Draw the text in black, with the specified font
+                            var fontSize = 12;
+                            var fontStyle = 'normal';
+                            var fontFamily = '"Roboto Mono", Consolas';
+                            ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+                            // Just naively convert to string for now
+                            var dataString = dataset.data[index].toString();
+                            if (self.currentTest !== 'density') {
+                                dataString = numberWithCommas(dataString) + '/s';
+                            } else {
+                                dataString = parseFloat(Math.round(dataset.data[index] * 100) / 100).toFixed(2) + "%";
+                            }
+                            // Make sure alignment settings are correct
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            var x = element._model.x - (dataString.length * 5)
+                            if (x < 220) {
+                                x = 220;
+                            }
+                            var y = element._model.y
+                            var backup = {
+                                fillStyle: ctx.fillStyle,
+                                shadowColor: ctx.shadowColor,
+                                shadowOffsetX: ctx.shadowOffsetX,
+                                shadowOffsetY : ctx.shadowOffsetY,
+                                shadowBlur: ctx.shadowBlur
+                            }
+                            ctx.fillStyle = 'rgb(2, 2, 2)';
+                            ctx.shadowColor = 'white';
+                            ctx.shadowBlur = 1;
+                            ctx.shadowOffsetX = 0;
+                            ctx.shadowOffsetY = 0;
+                            ctx.fillText(dataString, x, y);
+                            ctx.fillStyle = backup.fillStyle
+                            ctx.shadowColor = backup.shadowColor
+                            ctx.shadowOffsetX = backup.shadowOffsetX
+                            ctx.shadowOffsetY = backup.shadowOffsetY
+                            ctx.shadowBlur = backup.shadowBlur
+                        });
+                    }
+                });
+            }
+        });
         var self = this
         var nav = self.parent.parent.tags.nav.tags['nav-top-n']
         self.on('mount', function() {

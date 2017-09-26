@@ -42,11 +42,6 @@ public enum TestType {
         }
 
         @Override
-        public Test.Result pickOne(List<Test.Result> results) {
-            return results.get(results.size() - 1);
-        }
-
-        @Override
         public boolean isDbTest() {
             return false;
         }
@@ -55,6 +50,11 @@ public enum TestType {
         @Override
         public Map<String, List<Test.Result>> fetch(Test.Result.RawData rawData) {
             return rawData.query;
+        }
+
+        @Override
+        public Test.Result pickOne(List<Test.Result> results) {
+            return results.get(results.size() - 1);
         }
     },
     update() {
