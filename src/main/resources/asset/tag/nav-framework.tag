@@ -9,7 +9,7 @@
                 <span class="float-right badge hover-visible">{frameworkList.length}</span>
             </div>
             <ul class="framework-list menu" if="{currentLanguage === language}">
-                <li each="{framework in frameworkList}">
+                <li each="{framework in frameworkList}" onclick="{viewFramework}" class="{current: currentFramework === framework}">
                     <i class="fa fa-file-text"></i>
                     {framework}
                 </li>
@@ -20,6 +20,7 @@
         var self = this
         self.frameworks = {}
         self.currentLanguage = false
+        self.currentFramework = false
         self.on('mount', function() {
             self.fetchFrameworks()
         })
@@ -35,6 +36,10 @@
             } else {
                 self.currentLanguage = false
             }
+        }
+        viewFramework(e) {
+            self.currentFramework = e.item.framework
+            riot.store.trigger('open', {view: 'framework', framework: self.currentFramework});
         }
     </script>
 </nav-framework>

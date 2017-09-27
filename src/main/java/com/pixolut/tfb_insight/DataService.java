@@ -1,13 +1,18 @@
 package com.pixolut.tfb_insight;
 
+import static act.controller.Controller.Util.notFoundIfNull;
+
 import act.controller.annotation.UrlContext;
+import act.data.annotation.Data;
 import act.db.morphia.MorphiaQuery;
 import act.inject.DefaultValue;
+import act.util.SimpleBean;
 import com.pixolut.tfb_insight.model.*;
 import com.pixolut.tfb_insight.util.ColorCaculator;
 import org.osgl.$;
 import org.osgl.mvc.annotation.GetAction;
 import org.osgl.util.C;
+import org.osgl.util.E;
 import org.osgl.util.S;
 
 import java.util.*;
@@ -139,6 +144,34 @@ public class DataService {
         ChartData.Dataset top = new ChartData.Dataset("top", benchmarks.map((lb) -> lb.top), topBackgroundColors);
         data.datasets.add(top);
         return data;
+    }
+
+    @Data
+    public static class FrameworkBenchmarkKey implements SimpleBean {
+        public TestType test;
+        public String database;
+
+        public FrameworkBenchmarkKey(TestType test, String database) {
+            this.test = test;
+            this.database = "None".equalsIgnoreCase(database) ? "" : database;
+        }
+    }
+
+    @GetAction("chart/framework/{framework}")
+    public Map<FrameworkBenchmarkKey, ChartData> frameworkBenchmarks(String framework) {
+        Project project = projectDao.findOneBy("framework", framework);
+        notFoundIfNull(project);
+        for (Test test : project.tests) {
+            for (TestType type : TestType.values()) {
+                List<Test.Result> results = test.results.get(type);
+                if (null == results) {
+                    continue;
+                }
+                FrameworkBenchmarkKey key = new FrameworkBenchmarkKey(type, test.database);
+
+            }
+        }
+        throw E.tbd();
     }
 
     private ChartData codeDensity(List<Project> projects) {
