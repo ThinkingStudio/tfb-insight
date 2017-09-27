@@ -30,6 +30,9 @@
     Chart.defaults.global.defaultFontColor = '#fff';
     Chart.plugins.register({
         afterDatasetsDraw: function(chart, easing) {
+            if ('line' === chart.config.type) {
+                return;
+            }
             // To only draw at the end of animation, check for easing === 1
             var ctx = chart.ctx;
             chart.data.datasets.forEach(function (dataset, i) {
