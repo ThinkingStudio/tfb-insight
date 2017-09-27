@@ -185,6 +185,7 @@ public class DataService {
                 ChartData.Dataset dataset = new ChartData.Dataset(entry2.getKey(), entry2.getValue(), C.list(ColorCaculator.colorOfDataBase(entry2.getKey())));
                 dataset.fill = false;
                 dataset.test = type.name();
+                dataset.type = "line";
                 chartData.datasets.add(dataset);
             }
             retVal.put(entry.getKey(), chartData);
