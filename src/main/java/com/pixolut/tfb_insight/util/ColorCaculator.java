@@ -31,7 +31,7 @@ public class ColorCaculator {
         } else if ("sqlserver".equalsIgnoreCase(database)) {
             return "LightYellow";
         } else {
-            return "Snow";
+            return "LawnGreen";
         }
     }
 

@@ -30,6 +30,11 @@
                 riot.store.trigger('resend-last-event');
             }
         })
+        self.on('unmount', function() {
+            if (self.chart) {
+                self.chart.destroy()
+            }
+        })
         riot.store.on('open', function(param) {
             if (param.view === 'top-n') {
                 self.filter = param.filter
@@ -52,6 +57,9 @@
             self.fetchData($.extend({}, self.filter, {test: self.currentTest}))
         }
         fetchData(payload) {
+            if (self.chart) {
+                self.chart.destroy()
+            }
             var endpoint = '/api/v1/chart/framework'
             var type = 'horizontalBar'
             if ('language' === payload.target) {
@@ -79,9 +87,6 @@
                         }
                     }
                 };
-                if (self.chart) {
-                    self.chart.destroy()
-                }
                 var ctx = document.getElementById("chart");
                 self.chart = new Chart(ctx, config)
             })

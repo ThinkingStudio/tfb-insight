@@ -130,18 +130,18 @@ public class DataService {
             @NotNull TestType test,
             LanguageBenchmark.Dao dao
     ) {
-        C.List<LanguageBenchmark> benchmarks = C.list(dao.q("test", test).orderBy("-avg").fetchAsList());
+        C.List<LanguageBenchmark> benchmarks = C.list(dao.q("test", test).orderBy("-median").fetchAsList());
         ChartData data = new ChartData(benchmarks.map((lb) -> lb.language));
         data.datasets = new ArrayList<>();
 
-        List<String> avgBackgroundColors = benchmarks.map((lb) -> {return ColorCaculator.colorOf(lb.language, false);});
-        ChartData.Dataset avg = new ChartData.Dataset("average", benchmarks.map((lb) -> lb.avg), avgBackgroundColors);
+        List<String> medianColors = benchmarks.map((lb) -> {return ColorCaculator.colorOf(lb.language, false);});
+        ChartData.Dataset avg = new ChartData.Dataset("median", benchmarks.map((lb) -> lb.median), medianColors);
         avg.test = test.name();
         data.datasets.add(avg);
         avg.type = "bar";
 
-        List<String> topBackgroundColors = benchmarks.map((lb) -> {return ColorCaculator.colorOf(lb.language, true);});
-        ChartData.Dataset top = new ChartData.Dataset("top", benchmarks.map((lb) -> lb.top), topBackgroundColors);
+        List<String> topColors = benchmarks.map((lb) -> {return ColorCaculator.colorOf(lb.language, true);});
+        ChartData.Dataset top = new ChartData.Dataset("top", benchmarks.map((lb) -> lb.top), topColors);
         top.test = test.name();
         top.type = "line";
         top.fill = false;
@@ -151,7 +151,7 @@ public class DataService {
     }
 
     @GetAction("chart/framework/{framework}")
-    public Map<TestType, ChartData> frameworkBenchmarks(String framework) {
+    public Map<TestType, ChartData> frameworkDetails(String framework) {
         Project project = projectDao.findOneBy("framework", framework);
         notFoundIfNull(project);
         // The value is Map of
@@ -178,15 +178,42 @@ public class DataService {
             }
         }
         Map<TestType, ChartData> retVal = new HashMap<>();
+        LanguageBenchmark.Dao langDao = LanguageBenchmark.dao();
         for (Map.Entry<TestType, Map<String, List<Integer>>> entry : dataRepo.entrySet()) {
             TestType type = entry.getKey();
             ChartData chartData = new ChartData(type.roundLabels());
             for (Map.Entry<String, List<Integer>> entry2 : entry.getValue().entrySet()) {
-                ChartData.Dataset dataset = new ChartData.Dataset(entry2.getKey(), entry2.getValue(), C.list(ColorCaculator.colorOfDataBase(entry2.getKey())));
+                String label = entry2.getKey();
+                if (S.blank(label)) {
+                    label = framework;
+                } else {
+                    label = S.concat(framework, "-", label);
+                }
+                ChartData.Dataset dataset = new ChartData.Dataset(label, entry2.getValue(), C.list(ColorCaculator.colorOfDataBase(entry2.getKey())));
                 dataset.fill = false;
                 dataset.test = type.name();
                 dataset.type = "line";
                 chartData.datasets.add(dataset);
+            }
+            LanguageBenchmark lang = langDao.findOneBy("language,test", project.language, type);
+            if (null != lang) {
+                ChartData.Dataset langAvg = new ChartData.Dataset(
+                        S.fmt("median %s", project.language),
+                        lang.medianList, C.list("#aaa"));
+                langAvg.fill = false;
+                langAvg.type = "line";
+                langAvg.test = type.name();
+                langAvg.borderDash = C.list(5, 5);
+                chartData.datasets.add(langAvg);
+
+                ChartData.Dataset langTop = new ChartData.Dataset(
+                        S.fmt("top %s", project.language),
+                        lang.topList, C.list("#fff"));
+                langTop.fill = false;
+                langTop.type = "line";
+                langTop.borderDash = C.list(10, 5);
+                langTop.test = type.name();
+                chartData.datasets.add(langTop);
             }
             retVal.put(entry.getKey(), chartData);
         }
