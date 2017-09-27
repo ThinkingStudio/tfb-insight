@@ -39,7 +39,7 @@
         }
         viewFramework(e) {
             self.currentFramework = e.item.framework
-            riot.store.trigger('open', {view: 'framework', framework: self.currentFramework});
+            riot.store.trigger('open', {view: 'framework', framework: self.currentFramework, language: self.currentLanguage});
         }
     </script>
 </nav-framework>

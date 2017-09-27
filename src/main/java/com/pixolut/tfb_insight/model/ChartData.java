@@ -5,6 +5,7 @@ import act.util.SimpleBean;
 import org.osgl.$;
 import org.osgl.util.C;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,10 +17,15 @@ public class ChartData implements SimpleBean {
     /**
      * A data set of a chart.
      */
-    public static class Dataset implements Comparable<Dataset> {
+    @Data
+    public static class Dataset implements SimpleBean, Comparable<Dataset> {
         public String label;
-        public List<Number> data;
-        public List<String> backgroundColor;
+        public List<Number> data = new ArrayList<>();
+        public List<String> backgroundColor = new ArrayList<>();
+        public List<String> borderColor = new ArrayList<>();
+        public List<Integer> borderDash = new ArrayList<>();
+        public boolean fill = true;
+        public String test;
 
         public Dataset(String label, Number number, String backgroundColor) {
             this.label = label;
@@ -31,6 +37,7 @@ public class ChartData implements SimpleBean {
             this.label = label;
             this.data = C.list(numbers);
             this.backgroundColor = backgroundColor;
+            this.borderColor = backgroundColor;
         }
 
         public String getLabel() {
@@ -45,9 +52,9 @@ public class ChartData implements SimpleBean {
         }
     }
 
-    public List<String> labels;
+    public List<String> labels = new ArrayList<>();
 
-    public List<Dataset> datasets;
+    public List<Dataset> datasets = new ArrayList<>();
 
     public ChartData(List<String> labels) {
         this.labels = $.notNull(labels);

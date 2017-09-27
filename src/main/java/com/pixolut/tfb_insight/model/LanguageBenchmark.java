@@ -16,7 +16,9 @@ public class LanguageBenchmark extends MorphiaAdaptiveRecord<LanguageBenchmark> 
     public String language;
     public TestType test;
     public Float avg;
+    public List<Float> avgList;
     public Float top;
+    public List<Float> topList;
 
     @Command(name = "calculate.lang", help = "calculate language benchmark")
     public static void calculateLanguageBenchmark() {

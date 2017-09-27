@@ -2,6 +2,7 @@ package com.pixolut.tfb_insight.model;
 
 import act.Act;
 import act.db.morphia.MorphiaQuery;
+import org.osgl.util.C;
 import org.osgl.util.E;
 import org.osgl.util.S;
 
@@ -45,6 +46,11 @@ public enum TestType {
         public boolean isDbTest() {
             return false;
         }
+
+        @Override
+        public List<String> roundLabels() {
+            return C.list("256", "1024", "4096", "16384");
+        }
     },
     query() {
         @Override
@@ -55,6 +61,11 @@ public enum TestType {
         @Override
         public Test.Result pickOne(List<Test.Result> results) {
             return results.get(results.size() - 1);
+        }
+
+        @Override
+        public List<String> roundLabels() {
+            return C.list("1", "5", "10", "15", "20");
         }
     },
     update() {
@@ -67,6 +78,11 @@ public enum TestType {
         public Test.Result pickOne(List<Test.Result> results) {
             return results.get(results.size() - 1);
         }
+
+        @Override
+        public List<String> roundLabels() {
+            return C.list("1", "5", "10", "15", "20");
+        }
     },
     density() {
         @Override
@@ -78,6 +94,12 @@ public enum TestType {
         public Map<String, List<Test.Result>> fetch(Test.Result.RawData rawData) {
             throw E.unsupport();
         }
+
+        @Override
+        public List<String> roundLabels() {
+            throw E.unsupport();
+        }
+
     };
 
     public abstract Map<String, List<Test.Result>> fetch(Test.Result.RawData rawData);
@@ -101,6 +123,10 @@ public enum TestType {
             return buf.toString();
         }
         return buf.append(" | ").append(test.database).toString();
+    }
+
+    public List<String> roundLabels() {
+        return C.list("8", "16", "32", "64", "128", "256");
     }
 
     public float densityWeight() {

@@ -3,16 +3,13 @@ package com.pixolut.tfb_insight;
 import static act.controller.Controller.Util.notFoundIfNull;
 
 import act.controller.annotation.UrlContext;
-import act.data.annotation.Data;
 import act.db.morphia.MorphiaQuery;
 import act.inject.DefaultValue;
-import act.util.SimpleBean;
 import com.pixolut.tfb_insight.model.*;
 import com.pixolut.tfb_insight.util.ColorCaculator;
 import org.osgl.$;
 import org.osgl.mvc.annotation.GetAction;
 import org.osgl.util.C;
-import org.osgl.util.E;
 import org.osgl.util.S;
 
 import java.util.*;
@@ -117,6 +114,7 @@ public class DataService {
         ChartData data = new ChartData(C.list(chartData.values()).map((t2) -> t2._1));
         data.datasets = new ArrayList<>();
         ChartData.Dataset dataset = new ChartData.Dataset("", C.list(chartData.keySet()), C.list(chartData.values()).map((t2) -> t2._2));
+        dataset.test = test.name();
         data.datasets.add(dataset);
         return data;
     }
@@ -138,48 +136,65 @@ public class DataService {
 
         List<String> avgBackgroundColors = benchmarks.map((lb) -> {return ColorCaculator.colorOf(lb.language, false);});
         ChartData.Dataset avg = new ChartData.Dataset("average", benchmarks.map((lb) -> lb.avg), avgBackgroundColors);
+        avg.test = test.name();
         data.datasets.add(avg);
 
         List<String> topBackgroundColors = benchmarks.map((lb) -> {return ColorCaculator.colorOf(lb.language, true);});
         ChartData.Dataset top = new ChartData.Dataset("top", benchmarks.map((lb) -> lb.top), topBackgroundColors);
+        top.test = test.name();
         data.datasets.add(top);
         return data;
     }
 
-    @Data
-    public static class FrameworkBenchmarkKey implements SimpleBean {
-        public TestType test;
-        public String database;
-
-        public FrameworkBenchmarkKey(TestType test, String database) {
-            this.test = test;
-            this.database = "None".equalsIgnoreCase(database) ? "" : database;
-        }
-    }
-
     @GetAction("chart/framework/{framework}")
-    public Map<FrameworkBenchmarkKey, ChartData> frameworkBenchmarks(String framework) {
+    public Map<TestType, ChartData> frameworkBenchmarks(String framework) {
         Project project = projectDao.findOneBy("framework", framework);
         notFoundIfNull(project);
+        // The value is Map of
+        // - database
+        // - list of throughput number
+        Map<TestType, Map<String, List<Integer>>> dataRepo = new HashMap<>();
         for (Test test : project.tests) {
             for (TestType type : TestType.values()) {
-                List<Test.Result> results = test.results.get(type);
-                if (null == results) {
+                if (type == TestType.density || !test.results.containsKey(type)) {
                     continue;
                 }
-                FrameworkBenchmarkKey key = new FrameworkBenchmarkKey(type, test.database);
-
+                C.List<Test.Result> results = C.list(test.results.get(type));
+                Map<String, List<Integer>> map = dataRepo.get(type);
+                if (null == map) {
+                    map = new HashMap<>();
+                    dataRepo.put(type, map);
+                }
+                String database = type.isDbTest() ? test.database : "";
+                if (null == database || "None".equalsIgnoreCase(database)) {
+                    database = "";
+                }
+                List<Integer> throughputs = results.map(Test.Result::throughput);
+                map.put(database.toLowerCase(), throughputs);
             }
         }
-        throw E.tbd();
+        Map<TestType, ChartData> retVal = new HashMap<>();
+        for (Map.Entry<TestType, Map<String, List<Integer>>> entry : dataRepo.entrySet()) {
+            TestType type = entry.getKey();
+            ChartData chartData = new ChartData(type.roundLabels());
+            for (Map.Entry<String, List<Integer>> entry2 : entry.getValue().entrySet()) {
+                ChartData.Dataset dataset = new ChartData.Dataset(entry2.getKey(), entry2.getValue(), C.list(ColorCaculator.colorOfDataBase(entry2.getKey())));
+                dataset.fill = false;
+                dataset.test = type.name();
+                chartData.datasets.add(dataset);
+            }
+            retVal.put(entry.getKey(), chartData);
+        }
+        return retVal;
     }
 
     private ChartData codeDensity(List<Project> projects) {
         List<Float> densities = C.list(projects).map((p) -> p.density).filter((n) -> n > 0);
         projects = C.list(projects).take(densities.size());
         ChartData chartData = new ChartData(C.list(projects).map(Project::getLabel));
-        chartData.datasets = new ArrayList<>();
-        chartData.datasets.add(new ChartData.Dataset("", densities, C.list(projects).map((p) -> p.color)));
+        ChartData.Dataset dataset = new ChartData.Dataset("", densities, C.list(projects).map((p) -> p.color));
+        dataset.test = TestType.density.name();
+        chartData.datasets.add(dataset);
         return chartData;
     }
 }

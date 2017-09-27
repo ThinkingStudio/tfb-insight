@@ -21,6 +21,20 @@ public class ColorCaculator {
         return S.fmt("rgb(%s, %s, %s)", r, g, b);
     }
 
+    public static String colorOfDataBase(String database) {
+        if ("mysql".equalsIgnoreCase(database)) {
+            return "Cyan";
+        } else if ("postgres".equalsIgnoreCase(database)) {
+            return "Coral";
+        } else if ("mongodb".equalsIgnoreCase(database)) {
+            return "Lime";
+        } else if ("sqlserver".equalsIgnoreCase(database)) {
+            return "LightYellow";
+        } else {
+            return "Snow";
+        }
+    }
+
     /**
      * Calculate the color of a framework
      * @param project
