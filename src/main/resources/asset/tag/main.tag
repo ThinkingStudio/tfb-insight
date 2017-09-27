@@ -1,6 +1,6 @@
 <main>
     <welcome if="{view === 'welcome'}"></welcome>
-    <top-framework if="{view === 'top-framework'}"></top-framework>
+    <top-n if="{view === 'top-n'}"></top-n>
     <script>
         var self = this
         self.view = 'welcome'

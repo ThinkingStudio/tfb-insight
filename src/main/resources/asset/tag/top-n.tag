@@ -1,4 +1,4 @@
-<top-framework>
+<top-n>
     <h2 if="{filter}">{filter.label}</h2>
     <div class="radio-panel">
         <div class="radio {current:currentTest === test.id}" each="{test in tests}" onclick="{selectTest}">
@@ -37,7 +37,7 @@
                         meta.data.forEach(function(element, index) {
                             // Draw the text in black, with the specified font
                             var fontSize = 12;
-                            var fontStyle = 'normal';
+                            var fontStyle = 'bold';
                             var fontFamily = '"Roboto Mono", Consolas';
                             ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
                             // Just naively convert to string for now
@@ -62,11 +62,11 @@
                                 shadowOffsetY : ctx.shadowOffsetY,
                                 shadowBlur: ctx.shadowBlur
                             }
-                            ctx.fillStyle = 'rgb(2, 2, 2)';
-                            ctx.shadowColor = 'white';
-                            ctx.shadowBlur = 1;
-                            ctx.shadowOffsetX = 0;
-                            ctx.shadowOffsetY = 0;
+                            ctx.fillStyle = 'rgb(255,255,255)';
+                            ctx.shadowColor = 'black';
+                            ctx.shadowBlur = 2;
+                            ctx.shadowOffsetX = 1;
+                            ctx.shadowOffsetY = 1;
                             ctx.fillText(dataString, x, y);
                             ctx.fillStyle = backup.fillStyle
                             ctx.shadowColor = backup.shadowColor
@@ -99,7 +99,7 @@
         self.filter = {}
         riot.store.on('open', function(param) {
             console.log(param)
-            if (param.view !== 'top-framework') {
+            if (param.view !== 'top-n') {
                 return
             }
             self.filter = param.filter
@@ -146,4 +146,4 @@
             })
         }
     </script>
-</top-framework>
+</top-n>

@@ -51,7 +51,7 @@
 
         selectFilter(e) {
             self.currentFilter = e.item.filter
-            riot.store.trigger('open', {view: 'top-framework', filter: self.currentFilter});
+            riot.store.trigger('open', {view: 'top-n', filter: self.currentFilter});
         }
     </script>
 </nav-top-n>
