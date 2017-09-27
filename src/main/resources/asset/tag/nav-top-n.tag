@@ -10,36 +10,36 @@
         var self = this
         self.filters = [
             {
-                label: 'Top Java Fullstack frameworks',
+                label: 'Java Fullstack/Micro frameworks',
                 language: 'Java',
-                classification: 'Fullstack'
+                classification: '(Fullstack|Micro)'
             },
             {
-                label: 'Top PHP frameworks',
+                label: 'PHP frameworks',
                 language: 'PHP'
             },
             {
-                label: 'Top Python frameworks',
+                label: 'Python frameworks',
                 language: 'Python'
             },
             {
-                label: 'Top Ruby frameworks',
+                label: 'Ruby frameworks',
                 language: 'Ruby'
             },
             {
-                label: 'Top Scala frameworks',
+                label: 'Scala frameworks',
                 language: 'Scala'
             },
             {
-                label: 'Top Go frameworks',
+                label: 'Go frameworks',
                 language: 'Go'
             },
             {
-                label: 'Top JVM frameworks',
+                label: 'JVM frameworks',
                 technology: 'JVM'
             },
             {
-                label: 'Top .Net frameworks',
+                label: '.Net frameworks',
                 technology: 'DOT_NET'
             },
             {

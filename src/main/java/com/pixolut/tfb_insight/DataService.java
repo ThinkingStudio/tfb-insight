@@ -78,7 +78,7 @@ public class DataService {
             @NotNull TestType test,
             String language,
             String technology,
-            Test.Classification classification,
+            String classification,
             String orm,
             @DefaultValue("20") Integer top
     ) {
@@ -90,7 +90,7 @@ public class DataService {
             query.filter("technology", technology);
         }
         if (null != classification) {
-            query.filter("classification", classification);
+            query.filter("classification", Pattern.compile(classification, Pattern.CASE_INSENSITIVE));
         }
         if (S.notBlank(orm)) {
             query.filter("tests.orm", Pattern.compile(orm, Pattern.CASE_INSENSITIVE));
