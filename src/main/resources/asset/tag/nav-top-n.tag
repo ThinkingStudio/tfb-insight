@@ -15,6 +15,10 @@
                 classification: '(Fullstack|Micro)'
             },
             {
+                label: 'Java frameworks',
+                language: 'Java'
+            },
+            {
                 label: 'PHP frameworks',
                 language: 'PHP'
             },
