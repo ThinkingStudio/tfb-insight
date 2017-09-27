@@ -51,11 +51,16 @@
                         // Make sure alignment settings are correct
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
-                        var x = element._model.x - (dataString.length * 5)
-                        if (x < 220) {
-                            x = 220;
-                        }
+                        var x = element._model.x;
                         var y = element._model.y
+                        if ('language' !== chart.config.target) {
+                            x = x - (dataString.length * 5)
+                            if (x < 220) {
+                                x = 220;
+                            }
+                        } else {
+                            y = y - 10;
+                        }
                         var backup = {
                             fillStyle: ctx.fillStyle,
                             shadowColor: ctx.shadowColor,

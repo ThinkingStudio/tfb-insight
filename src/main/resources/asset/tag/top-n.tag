@@ -30,13 +30,11 @@
                 riot.store.trigger('resend-last-event');
             }
         })
-        self.on('update', function() {
-            riot.store.trigger('set-heading', {heading: self.filter.label + ' - ' + self.currentTest});
-        })
         riot.store.on('open', function(param) {
             if (param.view === 'top-n') {
                 self.filter = param.filter
                 self.fetchData($.extend({}, self.filter, {test: self.currentTest}))
+                riot.store.trigger('set-heading', {heading: self.filter.label + ' - ' + self.currentTest});
             }
         })
         self.tests = [
@@ -63,6 +61,7 @@
             $.getJSON(endpoint, payload, function (data) {
                 var config = {
                     type: type,
+                    target: payload.target,
                     data: data,
                     options: {
                         legend: {

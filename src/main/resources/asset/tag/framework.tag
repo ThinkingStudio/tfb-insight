@@ -42,6 +42,9 @@
             riot.store.trigger('resend-last-event');
         })
         riot.store.on('open', function (param) {
+            if (param.view !== 'framework') {
+                return
+            }
             self.framework = param.framework
             self.language = param.language
             self.fetchData()
