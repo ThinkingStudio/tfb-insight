@@ -138,10 +138,14 @@ public class DataService {
         ChartData.Dataset avg = new ChartData.Dataset("average", benchmarks.map((lb) -> lb.avg), avgBackgroundColors);
         avg.test = test.name();
         data.datasets.add(avg);
+        avg.type = "bar";
 
         List<String> topBackgroundColors = benchmarks.map((lb) -> {return ColorCaculator.colorOf(lb.language, true);});
         ChartData.Dataset top = new ChartData.Dataset("top", benchmarks.map((lb) -> lb.top), topBackgroundColors);
         top.test = test.name();
+        top.type = "line";
+        top.fill = false;
+        top.borderDash = C.list(10, 5);
         data.datasets.add(top);
         return data;
     }

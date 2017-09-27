@@ -88,7 +88,6 @@
                         }
                     };
                     var ctx = document.getElementById("chart-" + db);
-                    console.log({ctx: ctx, db: db})
                     self.charts[db] = new Chart(ctx, config)
                 })
             })

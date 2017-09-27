@@ -20,6 +20,7 @@ public class ChartData implements SimpleBean {
     @Data
     public static class Dataset implements SimpleBean, Comparable<Dataset> {
         public String label;
+        public String type = "horizontalBar";
         public List<Number> data = new ArrayList<>();
         public List<String> backgroundColor = new ArrayList<>();
         public List<String> borderColor = new ArrayList<>();
@@ -37,7 +38,7 @@ public class ChartData implements SimpleBean {
             this.label = label;
             this.data = C.list(numbers);
             this.backgroundColor = backgroundColor;
-            this.borderColor = backgroundColor;
+            this.borderColor = C.list(backgroundColor.get(0));
         }
 
         public String getLabel() {

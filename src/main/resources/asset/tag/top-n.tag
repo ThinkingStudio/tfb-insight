@@ -23,17 +23,20 @@
     </style>
     <script>
         var self = this
+        self.currentTest = 'db'
+        self.filter = false
         self.on('mount', function() {
-            riot.store.trigger('resend-last-event');
+            if (!self.filter) {
+                riot.store.trigger('resend-last-event');
+            }
         })
         self.on('update', function() {
             riot.store.trigger('set-heading', {heading: self.filter.label + ' - ' + self.currentTest});
-            self.fetchData($.extend({}, self.filter, {test: self.currentTest}))
         })
         riot.store.on('open', function(param) {
             if (param.view === 'top-n') {
                 self.filter = param.filter
-                self.update()
+                self.fetchData($.extend({}, self.filter, {test: self.currentTest}))
             }
         })
         self.tests = [
@@ -45,20 +48,21 @@
             {id: 'plaintext', label: 'Plain Text'},
             {id: 'density', label: 'Code Density'}
         ]
-        self.currentTest = 'db'
-        self.filter = {}
         selectTest(e) {
             self.currentTest = e.item.test.id
             self.update()
+            self.fetchData($.extend({}, self.filter, {test: self.currentTest}))
         }
         fetchData(payload) {
             var endpoint = '/api/v1/chart/framework'
+            var type = 'horizontalBar'
             if ('language' === payload.target) {
                 endpoint = '/api/v1/chart/language'
+                type = 'bar'
             }
             $.getJSON(endpoint, payload, function (data) {
                 var config = {
-                    type: 'horizontalBar',
+                    type: type,
                     data: data,
                     options: {
                         legend: {
