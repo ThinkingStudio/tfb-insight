@@ -11,7 +11,7 @@ PROFILE=
 GROUP=
 SYS_PROP=
 HELP=0
-JAVA_OPTS="$JAVA_OPTS -server -Xms512m -Xmx2g"
+JAVA_OPTS="$JAVA_OPTS -server -Xms128m -Xmx512m"
 # As long as there is at least one more argument, keep looping
 while [[ $# -gt 0 ]]; do
     key="$1"
