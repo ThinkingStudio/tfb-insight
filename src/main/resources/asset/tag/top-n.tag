@@ -54,6 +54,7 @@
         selectTest(e) {
             self.currentTest = e.item.test.id
             self.update()
+            riot.store.trigger('set-heading', {heading: self.filter.label + ' - ' + self.currentTest});
             self.fetchData($.extend({}, self.filter, {test: self.currentTest}))
         }
         fetchData(payload) {
