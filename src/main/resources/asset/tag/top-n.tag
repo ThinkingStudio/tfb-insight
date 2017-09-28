@@ -157,12 +157,36 @@
             if (!self.filter) {
                 riot.store.trigger('resend-last-event');
             }
+            var chartHolder = document.getElementById("chart")
+            chartHolder.onclick = function(e) {
+                var chart = chartHolder.chart;
+                if (chart) {
+                    var element = chart.getElementAtEvent(e)
+                    if (!element) return
+                    element = element[0]
+                    if (!element) return
+                    var label = element._model.label
+                    console.log(label)
+                    // get framework from '[language] framework | database'
+                    var id = label.indexOf(']')
+                    if (id < 0) {
+                        // it must be language bar
+                        riot.store.trigger('open', {view: 'top-n', filter: {language: label, label: label + ' frameworks'}})
+                        return
+                    }
+                    var id2 = label.indexOf('|')
+                    var language = label.substring(1, id)
+                    var framework = label.substring(id + 2, id2 - 1)
+                    riot.store.trigger('open', {view: 'framework', framework: framework, language: language})
+                }
+            }
         })
         self.on('unmount', function() {
             if (self.chart) {
                 self.chart.destroy()
             }
         })
+
         riot.store.on('open', function(param) {
             if (param.view === 'top-n') {
                 self.filter = param.filter
@@ -223,7 +247,11 @@
                     }
                 };
                 var ctx = document.getElementById("chart");
+                if (ctx.chart) {
+                    ctx.chart.destroy()
+                }
                 self.chart = new Chart(ctx, config)
+                ctx.chart = self.chart
             })
         }
     </script>

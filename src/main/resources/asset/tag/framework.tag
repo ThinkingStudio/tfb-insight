@@ -8,7 +8,7 @@
                 <b>{framework}</b> is a <b>{classification}</b> framework of <b>{language}</b>.
             </p>
             <p>{densityDesc} <b>{densityInfo.framework}</b></p>
-            <p>
+            <p if="{densityInfo.langMedian}">
                 As a reference <b>{language}</b>'s median code density level is <b>{densityInfo.langMedian}</b>,
                 and the language's top density level is <b>{densityInfo.langTop}</b>.
             </p>
@@ -82,6 +82,9 @@
         }
         getDensityDescriptor() {
             var di = self.densityInfo
+            if (!di) {
+                return 'Missing code density info for this framework';
+            }
             var desc = self.framework + "'s code density level is: "
             if (di.framework === di.langTop) {
                 desc = self.framework + ' is very expressive framework with code density of '
@@ -134,7 +137,15 @@
                         }
                     };
                     var ctx = document.getElementById("chart-" + db);
-                    self.charts[db] = new Chart(ctx, config)
+                    if (!ctx) {
+                        console.log('cannot find html element by chart-' + db)
+                        return
+                    }
+                    if (ctx.chart) {
+                        ctx.chart.destroy()
+                    }
+                    var chart = new Chart(ctx, config)
+                    ctx.chart = chart
                 })
             })
         }

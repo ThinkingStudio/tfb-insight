@@ -5,6 +5,7 @@ import static act.controller.Controller.Util.notFoundIfNull;
 import act.controller.annotation.UrlContext;
 import act.db.morphia.MorphiaQuery;
 import act.inject.DefaultValue;
+import act.util.LogSupport;
 import com.pixolut.tfb_insight.model.*;
 import com.pixolut.tfb_insight.util.ColorCaculator;
 import org.osgl.$;
@@ -21,7 +22,7 @@ import javax.validation.constraints.NotNull;
  * Provides data service for UI.
  */
 @UrlContext("api/v1")
-public class DataService {
+public class DataService extends LogSupport {
 
     @Inject
     private Project.Dao projectDao;
@@ -226,10 +227,14 @@ public class DataService {
 
         LanguageBenchmark langDensity = langDao.findOneBy("test,language", TestType.density, project.language);
         Map<String, Float> densityInfo = new HashMap<>();
-        densityInfo.put("framework", project.density);
-        densityInfo.put("langMedian", langDensity.median);
-        densityInfo.put("langTop", langDensity.top);
-        retVal.put("densityInfo", densityInfo);
+        if (null != langDensity) {
+            densityInfo.put("framework", project.density);
+            densityInfo.put("langMedian", langDensity.median);
+            densityInfo.put("langTop", langDensity.top);
+            retVal.put("densityInfo", densityInfo);
+        } else {
+            warn("Cannot find density info for language: " + project.language);
+        }
 
         retVal.put("classification", project.classification);
         retVal.put("srcPath", project.projectRoot);
