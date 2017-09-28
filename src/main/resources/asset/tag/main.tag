@@ -1,7 +1,12 @@
 <main>
-    <welcome if="{view === 'welcome'}"></welcome>
-    <top-n if="{view === 'top-n'}"></top-n>
-    <framework if="{view === 'framework'}"></framework>
+    <welcome class="{invisible: view !== 'welcome'}"></welcome>
+    <top-n class="{invisible: view !== 'top-n'}"></top-n>
+    <framework class="{invisible: view !== 'framework'}"></framework>
+    <style>
+        .invisible {
+            display: none
+        }
+    </style>
     <script>
         var self = this
         self.view = 'welcome'
@@ -16,8 +21,9 @@
         })
         riot.store.on('resend-last-event', function() {
             if (!self.lastEvent) return
-            riot.store.trigger(self.lastEvent.id, self.lastEvent.param)
+            var lastEvent = self.lastEvent
             self.lastEvent = false
+            riot.store.trigger(lastEvent.id, lastEvent.param)
         })
     </script>
 </main>

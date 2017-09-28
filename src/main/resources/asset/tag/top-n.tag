@@ -150,13 +150,12 @@
     </style>
     <script>
         var self = this
+        self.mounted = false
         self.hideDesc = true
         self.currentTest = 'db'
         self.filter = false
         self.on('mount', function() {
-            if (!self.filter) {
-                riot.store.trigger('resend-last-event');
-            }
+            riot.store.trigger('resend-last-event');
             var chartHolder = document.getElementById("chart")
             chartHolder.onclick = function(e) {
                 var chart = chartHolder.chart;
@@ -179,11 +178,6 @@
                     var framework = label.substring(id + 2, id2 - 1)
                     riot.store.trigger('open', {view: 'framework', framework: framework, language: language})
                 }
-            }
-        })
-        self.on('unmount', function() {
-            if (self.chart) {
-                self.chart.destroy()
             }
         })
 
