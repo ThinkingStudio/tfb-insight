@@ -104,7 +104,13 @@
             color: #000;
         }
         .brief {
-            padding-left: 20px
+            font-size: .9em;
+            color: white;
+            margin: 6px;
+            padding: 2px 15px;
+            background: #444;
+            position: relative;
+            width: 888px;
         }
         table.density td {
             text-align: right;
