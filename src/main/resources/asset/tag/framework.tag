@@ -12,6 +12,10 @@
                 As a reference <b>{language}</b>'s median code density level is <b>{densityInfo.langMedian}</b>,
                 and the language's top density level is <b>{densityInfo.langTop}</b>.
             </p>
+            <p>
+                The source code of {framework} can be found at
+                <a target="_blank" href="https://github.com/TechEmpower/FrameworkBenchmarks/tree/master/frameworks{srcPath}">https://github.com/TechEmpower/FrameworkBenchmarks/tree/master/frameworks{srcPath}</a>
+            </p>
         </div>
         <div class="framework-performance" if="{hasData('db')}">
             <h4>Single Query</h4>
@@ -95,6 +99,7 @@
                     return
                 }
                 self.noResult = false
+                self.srcPath = retVal.srcPath
                 self.classification = retVal.classification
                 self.densityInfo = retVal.densityInfo
                 self.densityDesc = self.getDensityDescriptor()

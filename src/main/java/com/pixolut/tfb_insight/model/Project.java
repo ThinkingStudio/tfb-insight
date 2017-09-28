@@ -48,7 +48,7 @@ public class Project extends MorphiaAdaptiveRecord<Project> {
     public Float density;
 
     public Project(BenchmarkConfig config, File projectRoot) {
-        this.projectRoot = projectRoot.getAbsolutePath();
+        this.projectRoot = S.afterFirst(projectRoot.getAbsolutePath(), "frameworks");
         this.init(config);
     }
 

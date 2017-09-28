@@ -4,7 +4,14 @@
             {test.label}
         </div>
     </div>
-    <div if="{'db' === currentTest}" class="brief">
+    <div if="{hideDesc}" class="brief" onclick="{showDescription}" style="cursor:pointer;">
+        <i class="fa fa-ellipsis-h" style="float: right;margin-top:4px"></i>
+        Description
+    </div>
+    <div if="{'db' === currentTest && !hideDesc}" class="brief">
+        <div class="btn-right-corner" onclick="{hideDescription}">
+            <i class="fa fa-angle-up"></i>
+        </div>
         <p>
             In Single Query Test each request is processed by fetching a single row from a simple database table. That row is then serialized as a JSON response.
         </p>
@@ -12,7 +19,10 @@
             The test is running at 8, 16, 32, 64, 128 and 256 concurrency levels, and the data presented below is the best result.
         </p>
     </div>
-    <div if="{'query' === currentTest}" class="brief">
+    <div if="{'query' === currentTest && !hideDesc}" class="brief">
+        <div class="btn-right-corner" onclick="{hideDescription}">
+            <i class="fa fa-angle-up"></i>
+        </div>
         <p>
             In Multiple Queries Test, each request is processed by fetching multiple rows from a simple database table and serializing these rows as a JSON response. The test is run multiple times: testing 1, 5, 10, 15, and 20 queries per request. All tests are run at 256 concurrency
         </p>
@@ -20,7 +30,10 @@
             The data presented below is the result of 20 queries per request case
         </p>
     </div>
-    <div if="{'update' === currentTest}" class="brief">
+    <div if="{'update' === currentTest && !hideDesc}" class="brief">
+        <div class="btn-right-corner" onclick="{hideDescription}">
+            <i class="fa fa-angle-up"></i>
+        </div>
         <p>
             In this test, each request is processed by fetching multiple rows from a simple database table, converting the rows to in-memory objects, modifying one attribute of each object in memory, updating each associated row in the database individually, and then serializing the list of objects as a JSON response. The test is run multiple times: testing 1, 5, 10, 15, and 20 updates per request. Note that the number of statements per request is twice the number of updates since each update is paired with one query to fetch the object. All tests are run at 256 concurrency.
         </p>
@@ -28,7 +41,10 @@
             The data presented below is the result of 20 queries per request case
         </p>
     </div>
-    <div if="{'json' === currentTest}" class="brief">
+    <div if="{'json' === currentTest && !hideDesc}" class="brief">
+        <div class="btn-right-corner" onclick="{hideDescription}">
+            <i class="fa fa-angle-up"></i>
+        </div>
         <p>
             In this test, each response is a JSON serialization of a freshly-instantiated object that maps the key message to the value Hello, World!
         </p>
@@ -36,7 +52,10 @@
             The test is running at 8, 16, 32, 64, 128 and 256 concurrency levels, and the data presented below is the best result.
         </p>
     </div>
-    <div if="{'plaintext' === currentTest}" class="brief">
+    <div if="{'plaintext' === currentTest && !hideDesc}" class="brief">
+        <div class="btn-right-corner" onclick="{hideDescription}">
+            <i class="fa fa-angle-up"></i>
+        </div>
         <p>
             In this test, the framework responds with the simplest of responses: a "Hello, World" message rendered as plain text. The size of the response is kept small so that gigabit Ethernet is not the limiting factor for all implementations. HTTP pipelining is enabled and higher client-side concurrency levels are used for this test
         </p>
@@ -44,7 +63,10 @@
             The test is running at 256, 1024, 4096, 16,384 concurrency levels, and the data presented below is the best result.
         </p>
     </div>
-    <div if="{'fortune' === currentTest}" class="brief">
+    <div if="{'fortune' === currentTest && !hideDesc}" class="brief">
+        <div class="btn-right-corner" onclick="{hideDescription}">
+            <i class="fa fa-angle-up"></i>
+        </div>
         <p>
             In this test, the framework's ORM is used to fetch all rows from a database table containing an unknown number of Unix fortune cookie messages (the table has 12 rows, but the code cannot have foreknowledge of the table's size). An additional fortune cookie message is inserted into the list at runtime and then the list is sorted by the message text. Finally, the list is delivered to the client using a server-side HTML template. The message text must be considered untrusted and properly escaped and the UTF-8 fortune messages must be rendered properly.
         </p>
@@ -52,7 +74,10 @@
             The test is running at 8, 16, 32, 64, 128 and 256 concurrency levels, and the data presented below is the best result.
         </p>
     </div>
-    <div if="{'density' === currentTest}" class="brief">
+    <div if="{'density' === currentTest && !hideDesc}" class="brief">
+        <div class="btn-right-corner" onclick="{hideDescription}">
+            <i class="fa fa-angle-up"></i>
+        </div>
         <p>
             This is an indication about how efficiency the testing project code is by measuring the LoC and the tests.
             At the moment we are using the following approach to determine test weight in the calculating:
@@ -91,6 +116,12 @@
         <canvas id="chart"></canvas>
     </div>
     <style>
+        div.btn-right-corner {
+            position: absolute;
+            right: 10px;
+            top: 0px;
+            cursor: pointer;
+        }
         .radio-panel > .radio {
             display: inline-block;
             margin: 8px;
@@ -119,6 +150,7 @@
     </style>
     <script>
         var self = this
+        self.hideDesc = true
         self.currentTest = 'db'
         self.filter = false
         self.on('mount', function() {
@@ -152,6 +184,12 @@
             self.update()
             riot.store.trigger('set-heading', {heading: self.filter.label + ' - ' + self.currentTest});
             self.fetchData($.extend({}, self.filter, {test: self.currentTest}))
+        }
+        hideDescription() {
+            self.hideDesc = true
+        }
+        showDescription() {
+            self.hideDesc = false
         }
         fetchData(payload) {
             if (self.chart) {

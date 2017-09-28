@@ -232,6 +232,7 @@ public class DataService {
         retVal.put("densityInfo", densityInfo);
 
         retVal.put("classification", project.classification);
+        retVal.put("srcPath", project.projectRoot);
 
         return retVal;
     }
