@@ -4,6 +4,89 @@
             {test.label}
         </div>
     </div>
+    <div if="{'db' === currentTest}" class="brief">
+        <p>
+            In Single Query Test each request is processed by fetching a single row from a simple database table. That row is then serialized as a JSON response.
+        </p>
+        <p>
+            The test is running at 8, 16, 32, 64, 128 and 256 concurrency levels, and the data presented below is the best result.
+        </p>
+    </div>
+    <div if="{'query' === currentTest}" class="brief">
+        <p>
+            In Multiple Queries Test, each request is processed by fetching multiple rows from a simple database table and serializing these rows as a JSON response. The test is run multiple times: testing 1, 5, 10, 15, and 20 queries per request. All tests are run at 256 concurrency
+        </p>
+        <p>
+            The data presented below is the result of 20 queries per request case
+        </p>
+    </div>
+    <div if="{'update' === currentTest}" class="brief">
+        <p>
+            In this test, each request is processed by fetching multiple rows from a simple database table, converting the rows to in-memory objects, modifying one attribute of each object in memory, updating each associated row in the database individually, and then serializing the list of objects as a JSON response. The test is run multiple times: testing 1, 5, 10, 15, and 20 updates per request. Note that the number of statements per request is twice the number of updates since each update is paired with one query to fetch the object. All tests are run at 256 concurrency.
+        </p>
+        <p>
+            The data presented below is the result of 20 queries per request case
+        </p>
+    </div>
+    <div if="{'json' === currentTest}" class="brief">
+        <p>
+            In this test, each response is a JSON serialization of a freshly-instantiated object that maps the key message to the value Hello, World!
+        </p>
+        <p>
+            The test is running at 8, 16, 32, 64, 128 and 256 concurrency levels, and the data presented below is the best result.
+        </p>
+    </div>
+    <div if="{'plaintext' === currentTest}" class="brief">
+        <p>
+            In this test, the framework responds with the simplest of responses: a "Hello, World" message rendered as plain text. The size of the response is kept small so that gigabit Ethernet is not the limiting factor for all implementations. HTTP pipelining is enabled and higher client-side concurrency levels are used for this test
+        </p>
+        <p>
+            The test is running at 256, 1024, 4096, 16,384 concurrency levels, and the data presented below is the best result.
+        </p>
+    </div>
+    <div if="{'fortune' === currentTest}" class="brief">
+        <p>
+            In this test, the framework's ORM is used to fetch all rows from a database table containing an unknown number of Unix fortune cookie messages (the table has 12 rows, but the code cannot have foreknowledge of the table's size). An additional fortune cookie message is inserted into the list at runtime and then the list is sorted by the message text. Finally, the list is delivered to the client using a server-side HTML template. The message text must be considered untrusted and properly escaped and the UTF-8 fortune messages must be rendered properly.
+        </p>
+        <p>
+            The test is running at 8, 16, 32, 64, 128 and 256 concurrency levels, and the data presented below is the best result.
+        </p>
+    </div>
+    <div if="{'density' === currentTest}" class="brief">
+        <p>
+            This is an indication about how efficiency the testing project code is by measuring the LoC and the tests.
+            At the moment we are using the following approach to determine test weight in the calculating:
+        </p>
+        <table class="density">
+            <tbody>
+            <tr>
+                <td>Plain Test</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>JSON</td>
+                <td>1.2</td>
+            </tr>
+            <tr>
+                <td>Single Query</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>Multiple Queries</td>
+                <td>2.2</td>
+            </tr>
+            <tr>
+                <td>Data Updates</td>
+                <td>2.5</td>
+            </tr>
+            <tr>
+                <td>Fortune</td>
+                <td>2.2</td>
+            </tr>
+            </tbody>
+        </table>
+        <p>Note this measurement does not take the Fortune template into consideration, neither does it calculate the configuration files</p>
+    </div>
     <div id="canvas-container">
         <canvas id="chart"></canvas>
     </div>
@@ -19,6 +102,13 @@
         .radio-panel > .radio:hover, .radio-panel > .radio.current {
             background: #aaa;
             color: #000;
+        }
+        .brief {
+            padding-left: 20px
+        }
+        table.density td {
+            text-align: right;
+            padding-left: 10px;
         }
     </style>
     <script>

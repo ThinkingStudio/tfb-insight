@@ -1,5 +1,18 @@
 <framework>
-    <div>
+    <div if="{noResult}">
+        There is no test results for this framework
+    </div>
+    <div if="{!noResult}">
+        <div class="brief">
+            <p>
+                <b>{framework}</b> is a <b>{classification}</b> framework of <b>{language}</b>.
+            </p>
+            <p>{densityDesc} <b>{densityInfo.framework}</b></p>
+            <p>
+                As a reference <b>{language}</b>'s median code density level is <b>{densityInfo.langMedian}</b>,
+                and the language's top density level is <b>{densityInfo.langTop}</b>.
+            </p>
+        </div>
         <div class="framework-performance" if="{hasData('db')}">
             <h4>Single Query</h4>
             <canvas id="chart-db"></canvas>
@@ -36,8 +49,12 @@
         var self = this
         self.framework = false
         self.language = false
+        self.noResult = false
+        self.densityDesc = false
+        self.densityInfo = {}
         self.charts = {}
         self.histogram = {}
+        self.classification = false
         self.on('mount', function () {
             riot.store.trigger('resend-last-event');
         })
@@ -59,8 +76,29 @@
                 if (chart) chart.destroy()
             })
         }
+        getDensityDescriptor() {
+            var di = self.densityInfo
+            var desc = self.framework + "'s code density level is: "
+            if (di.framework === di.langTop) {
+                desc = self.framework + ' is very expressive framework with code density of '
+            } else if (di.framework > di.langMedian) {
+                var desc = self.framework + " is an expressive framework with code density of "
+            }
+            return desc
+        }
         fetchData() {
-            $.getJSON('/api/v1/chart/framework/' + self.framework, function (dataset) {
+            self.destroyCharts()
+            $.getJSON('/api/v1/chart/framework/' + self.framework, function (retVal) {
+                if (retVal.noResult) {
+                    self.noResult = true
+                    self.update()
+                    return
+                }
+                self.noResult = false
+                self.classification = retVal.classification
+                self.densityInfo = retVal.densityInfo
+                self.densityDesc = self.getDensityDescriptor()
+                var dataset = retVal.testResults
                 self.histogram = dataset
                 self.update()
                 self.destroyCharts()

@@ -151,7 +151,7 @@ public class DataService {
     }
 
     @GetAction("chart/framework/{framework}")
-    public Map<TestType, ChartData> frameworkDetails(String framework) {
+    public Object frameworkDetails(String framework) {
         Project project = projectDao.findOneBy("framework", framework);
         notFoundIfNull(project);
         // The value is Map of
@@ -177,7 +177,7 @@ public class DataService {
                 map.put(database.toLowerCase(), throughputs);
             }
         }
-        Map<TestType, ChartData> retVal = new HashMap<>();
+        Map<TestType, ChartData> testResults = new HashMap<>();
         LanguageBenchmark.Dao langDao = LanguageBenchmark.dao();
         for (Map.Entry<TestType, Map<String, List<Integer>>> entry : dataRepo.entrySet()) {
             TestType type = entry.getKey();
@@ -215,8 +215,24 @@ public class DataService {
                 langTop.test = type.name();
                 chartData.datasets.add(langTop);
             }
-            retVal.put(entry.getKey(), chartData);
+            testResults.put(entry.getKey(), chartData);
         }
+        Map<String, Object> retVal = new HashMap<>();
+        if (testResults.isEmpty()) {
+            retVal.put("noResult", true);
+            return retVal;
+        }
+        retVal.put("testResults", testResults);
+
+        LanguageBenchmark langDensity = langDao.findOneBy("test,language", TestType.density, project.language);
+        Map<String, Float> densityInfo = new HashMap<>();
+        densityInfo.put("framework", project.density);
+        densityInfo.put("langMedian", langDensity.median);
+        densityInfo.put("langTop", langDensity.top);
+        retVal.put("densityInfo", densityInfo);
+
+        retVal.put("classification", project.classification);
+
         return retVal;
     }
 
