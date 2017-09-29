@@ -5,6 +5,7 @@ import static act.controller.Controller.Util.notFoundIfNull;
 import act.controller.annotation.UrlContext;
 import act.db.morphia.MorphiaQuery;
 import act.inject.DefaultValue;
+import act.util.CacheFor;
 import act.util.LogSupport;
 import com.pixolut.tfb_insight.model.*;
 import com.pixolut.tfb_insight.util.ColorCaculator;
@@ -33,6 +34,7 @@ public class DataService extends LogSupport {
      *      framework list indexed by language
      */
     @GetAction("framework")
+    @CacheFor
     public Map<String, SortedSet<String>> frameworkListByLanguage() {
         SortedMap<String, SortedSet<String>> retVal = new TreeMap<>((o1, o2) -> {
                 if (o1.equals("Others")) {
@@ -69,13 +71,14 @@ public class DataService extends LogSupport {
     }
 
     /**
-     * Query chart data for framework benchmark
+     * Query chart data for top N
      *
      * @return
-     *      chart framework benchmark data
+     *      top N chart data
      */
     @GetAction("chart/framework")
-    public ChartData frameworkBenchmark(
+    @CacheFor
+    public ChartData topN(
             @NotNull TestType test,
             String language,
             String technology,
@@ -101,20 +104,22 @@ public class DataService extends LogSupport {
         if (test == TestType.density) {
             return codeDensity(projects);
         }
-        SortedMap<Number, $.T2<String, String>> chartData = new TreeMap<>(Collections.reverseOrder());
+        SortedMap<Number, $.T3<String, String, String>> chartData = new TreeMap<>(Collections.reverseOrder());
 
         for (Project project : projects) {
             $.T2<Test, Test.Result> best = project.bestOf(test);
             if (null == best._2) {
                 continue;
             }
-            String backgroundColor = best._1.color;
+            String backgroundColor =  best._1.color;
+            String borderColor = ColorCaculator.colorOfClassification(project.classification);
             String label = test.label(project, best._1);
-            chartData.put(best._2.throughput(), $.T2(label, backgroundColor));
+            chartData.put(best._2.throughput(), $.T3(label, backgroundColor, borderColor));
         }
         ChartData data = new ChartData(C.list(chartData.values()).map((t2) -> t2._1));
         data.datasets = new ArrayList<>();
-        ChartData.Dataset dataset = new ChartData.Dataset("", C.list(chartData.keySet()), C.list(chartData.values()).map((t2) -> t2._2));
+        ChartData.Dataset dataset = new ChartData.Dataset("", C.list(chartData.keySet()), C.list(chartData.values()).map((t3) -> t3._2));
+        dataset.borderColor = C.list(chartData.values()).map((t3) -> t3._3);
         dataset.test = test.name();
         data.datasets.add(dataset);
         return data;
@@ -127,6 +132,7 @@ public class DataService extends LogSupport {
      *      chart language benchmark data
      */
     @GetAction("chart/language")
+    @CacheFor
     public ChartData languageBenchmark(
             @NotNull TestType test,
             LanguageBenchmark.Dao dao
@@ -152,6 +158,7 @@ public class DataService extends LogSupport {
     }
 
     @GetAction("chart/framework/{framework}")
+    @CacheFor
     public Object frameworkDetails(String framework) {
         Project project = projectDao.findOneBy("framework", framework);
         notFoundIfNull(project);
@@ -248,6 +255,7 @@ public class DataService extends LogSupport {
         ChartData chartData = new ChartData(C.list(projects).map(Project::getLabel));
         ChartData.Dataset dataset = new ChartData.Dataset("", densities, C.list(projects).map((p) -> p.color));
         dataset.test = TestType.density.name();
+        dataset.borderColor = C.list(projects).map((prj) -> ColorCaculator.colorOfClassification(prj.classification));
         chartData.datasets.add(dataset);
         return chartData;
     }

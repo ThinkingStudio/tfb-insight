@@ -35,12 +35,33 @@ public class ColorCaculator {
         }
     }
 
+    public static String colorOfClassification(Test.Classification classification) {
+        switch (classification) {
+            case Fullstack:
+                return "SPRINGGREEN";
+            case Micro:
+                return "YELLOW";
+            default:
+                return "GHOSTWHITE";
+        }
+    }
+
+    public static String patternOfClassfication(Test.Classification classification) {
+        switch (classification) {
+            case Fullstack:
+                return "square";
+            case Micro:
+                return "diagonal";
+            default:
+                return "";
+        }
+    }
+
     /**
      * Calculate the color of a framework
-     * @param project
-     *      the project
-     * @return
-     *      the color of the project framework
+     *
+     * @param project the project
+     * @return the color of the project framework
      */
     public static String colorOf(Project project) {
         Float density = project.density;
@@ -63,6 +84,7 @@ public class ColorCaculator {
     public static String colorOf(Project project, Test test) {
         return colorOf(project);
     }
+
     private static int rgbOf(Object obj) {
         return 55 + Math.abs(obj.hashCode() % 200);
     }

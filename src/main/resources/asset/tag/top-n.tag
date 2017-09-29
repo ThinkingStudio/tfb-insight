@@ -113,9 +113,50 @@
         <p>Note this measurement does not take the Fortune template into consideration, neither does it calculate the configuration files</p>
     </div>
     <div id="canvas-container">
+        <ul class="legend" if="{'language' !== filter.target}">
+            <li class="fullstack">
+                <div class="color"></div>
+                <div class="label">Fullstack</div>
+            </li>
+            <li class="micro">
+                <div class="color"></div>
+                <div class="label">Micro</div>
+            </li>
+            <li class="platform">
+                <div class="color"></div>
+                <div class="label">Platform</div>
+            </li>
+        </ul>
         <canvas id="chart"></canvas>
     </div>
     <style>
+        ul.legend {
+            display: block;
+            font-size: 0.7em;
+            text-align: center;
+            width: 924px;
+        }
+        ul.legend li {
+            display: inline-block;
+            margin: 20px 30px;
+            text-align: center;
+        }
+        ul.legend .color {
+            width: 40px;
+            height: 20px;
+            border-radius: 3px;
+            margin: auto;
+            margin-bottom: 5px;
+        }
+        ul.legend .fullstack .color {
+            background: SPRINGGREEN;
+        }
+        ul.legend .micro .color {
+            background: YELLOW;
+        }
+        ul.legend .platform .color {
+            background: GHOSTWHITE;
+        }
         div.btn-right-corner {
             position: absolute;
             right: 10px;
@@ -165,11 +206,10 @@
                     element = element[0]
                     if (!element) return
                     var label = element._model.label
-                    console.log(label)
                     // get framework from '[language] framework | database'
                     var id = label.indexOf(']')
                     if (id < 0) {
-                        // it must be language bar
+                        // it must be a language bar
                         riot.store.trigger('open', {view: 'top-n', filter: {language: label, label: label + ' frameworks'}})
                         return
                     }
@@ -184,6 +224,7 @@
         riot.store.on('open', function(param) {
             if (param.view === 'top-n') {
                 self.filter = param.filter
+                self.update()
                 self.fetchData($.extend({}, self.filter, {test: self.currentTest}))
                 riot.store.trigger('set-heading', {heading: self.filter.label + ' - ' + self.currentTest});
             }
@@ -220,6 +261,11 @@
                 type = 'bar'
             }
             $.getJSON(endpoint, payload, function (data) {
+                if ('language' !== payload.target) {
+                    $.each(data.datasets, function(id, dataset) {
+                        dataset.borderWidth = 20;
+                    })
+                }
                 var config = {
                     type: type,
                     target: payload.target,
@@ -237,6 +283,11 @@
                                     fontColor: '#aaa'
                                 }
                             }]
+                        },
+                        elements: {
+                            rectangle: {
+                                borderSkipped: ['top', 'bottom', 'right']
+                            }
                         }
                     }
                 };
