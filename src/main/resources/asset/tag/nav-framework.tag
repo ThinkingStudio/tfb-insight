@@ -1,5 +1,5 @@
 <nav-framework>
-    <div class="heading">Frameworks</div>
+    <div class="heading"><i class="fa fa-institution"></i>&nbsp;Frameworks</div>
     <ul class="language-list menu">
         <li each="{frameworkList, language in frameworks}" class="{language} {current: currentLanguage === language}" >
             <div class="language" onclick="{toggleLanguage}">

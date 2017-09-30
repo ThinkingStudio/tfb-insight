@@ -1,5 +1,9 @@
 <nav-top-n>
-    <div class="heading">Top N</div>
+    <div class="heading">
+        <i class="fa fa-sort-amount-desc "></i>
+        &nbsp;
+        Top N
+    </div>
     <ul class="top-n-list menu">
         <li each="{filter in filters}"  onclick="{selectFilter}" class="{current: currentFilter === filter}">
             <i class="fa fa-bar-chart"></i>

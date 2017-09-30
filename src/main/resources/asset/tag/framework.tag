@@ -5,41 +5,74 @@
     <div if="{!noResult}">
         <div class="brief">
             <p>
-                <b>{framework}</b> is a <b>{classification}</b> framework of <b>{language}</b>.
-            </p>
-            <p>{densityDesc} <b>{densityInfo.framework}</b></p>
-            <p if="{densityInfo.langMedian}">
-                As a reference <b>{language}</b>'s median code density level is <b>{densityInfo.langMedian}</b>,
-                and the language's top density level is <b>{densityInfo.langTop}</b>.
+                <b>{_.capitalize(framework)}</b> is a <b>{classification}</b>
+                <virtual if="{'Platform' !== classification}">framework</virtual> of <b>{language}</b>.
             </p>
             <p>
-                The source code of {framework} can be found at
+                <i class="fa fa-github"></i>
                 <a target="_blank" href="https://github.com/TechEmpower/FrameworkBenchmarks/tree/master/frameworks{srcPath}">https://github.com/TechEmpower/FrameworkBenchmarks/tree/master/frameworks{srcPath}</a>
             </p>
         </div>
-        <div class="framework-performance" if="{hasData('db')}">
-            <h4>Single Query</h4>
-            <canvas id="chart-db"></canvas>
+        <div class="section code-density" if="{densityInfo && densityInfo.framework}">
+            <h3><i class="fa fa-binoculars"></i> Code density analysis</h3>
+            <br>
+            <table>
+                <thead>
+                <tr>
+                    <th>{framework}</th>
+                    <th>{language} median</th>
+                    <th>{language} top</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{densityInfo.framework.toFixed(2)}%</td>
+                    <td>{densityInfo.langMedian.toFixed(2)}%</td>
+                    <td>{densityInfo.langTop.toFixed(2)}%</td>
+                </td>
+                </tbody>
+            </table>
+            <p>
+                <b>{_.capitalize(framework)}</b>
+                <virtual if="{densityInfo.framework > 7}">
+                    is an expressive framework/platform. It generally takes less lines of code
+                    to develop application using <b>{_.capitalize(framework)}</b>
+                </virtual>
+                <virtual if="{densityInfo.framework <= 7 && densityInfo.framework > 4}">
+                    is moderated framework/platform in terms of expressiveness.
+                </virtual>
+                <virtual if="{densityInfo.framework <= 4}">
+                    is relatively less expressive framework/platform. It might takes more lines
+                    of code to develop application using <b>{_.capitalize(framework)}</b>
+                </virtual>
+            </p>
         </div>
-        <div class="framework-performance" if="{hasData('query')}">
-            <h4>Multiple Query</h4>
-            <canvas id="chart-query"></canvas>
-        </div>
-        <div class="framework-performance" if="{hasData('update')}">
-            <h4>Update</h4>
-            <canvas id="chart-update"></canvas>
-        </div>
-        <div class="framework-performance" if="{hasData('fortune')}">
-            <h4>Fortune</h4>
-            <canvas id="chart-fortune"></canvas>
-        </div>
-        <div class="framework-performance" if="{hasData('json')}">
-            <h4>JSON</h4>
-            <canvas id="chart-json"></canvas>
-        </div>
-        <div class="framework-performance" if="{hasData('plaintext')}">
-            <h4>Plain Text</h4>
-            <canvas id="chart-plaintext"></canvas>
+        <div class="section tests">
+            <h3><i class="fa fa-line-chart"></i> Test Results</h3>
+            <div class="framework-performance" if="{hasData('db')}">
+                <h4>Single Query</h4>
+                <canvas id="chart-db"></canvas>
+            </div>
+            <div class="framework-performance" if="{hasData('query')}">
+                <h4>Multiple Query</h4>
+                <canvas id="chart-query"></canvas>
+            </div>
+            <div class="framework-performance" if="{hasData('update')}">
+                <h4>Update</h4>
+                <canvas id="chart-update"></canvas>
+            </div>
+            <div class="framework-performance" if="{hasData('fortune')}">
+                <h4>Fortune</h4>
+                <canvas id="chart-fortune"></canvas>
+            </div>
+            <div class="framework-performance" if="{hasData('json')}">
+                <h4>JSON</h4>
+                <canvas id="chart-json"></canvas>
+            </div>
+            <div class="framework-performance" if="{hasData('plaintext')}">
+                <h4>Plain Text</h4>
+                <canvas id="chart-plaintext"></canvas>
+            </div>
         </div>
     </div>
     <style>
@@ -47,6 +80,29 @@
             width: 640px;
             display: inline-block;
             margin: 20px;
+        }
+        h3 {
+            margin-top: 40px;
+            margin-bottom: 5px;
+            font-weight: 700;
+            display: block;
+            border-bottom: 1px solid #555;
+        }
+        .tests h3{
+            margin-bottom: -5px;
+        }
+        table, th, td, thead, tbody {
+            border: 1px solid #888;
+            border-collapse: collapse;
+            padding: 2px 8px;
+        }
+        th {
+            text-align: center;
+            background: #aaa;
+            color: #222
+        }
+        td {
+            text-align: right;
         }
     </style>
     <script>

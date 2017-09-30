@@ -7,14 +7,13 @@
   <link rel="stylesheet" href="/asset/fa/css/font-awesome.min.css" type="text/css"/>
 </head>
 <body>
-<h1 id="heading" class="header">TFB Data Visualiser</h1>
+<h1 id="heading" class="header">TFB Insight</h1>
 <div class="body">
   <app></app>
 </div>
 <script src="/~/asset/js/jquery.js"></script>
 <script src="/~/asset/js/jquery.ext.js"></script>
 <script src="/asset/js/lodash.js"></script>
-<script src="/asset/js/patternomaly.js"></script>
 <script src="/asset/js/chart.js"></script>
 <script src="/~/asset/js/riotjs.js"></script>
 <script type="riot/tag" src="/asset/tag/app.tag"></script>
@@ -97,9 +96,9 @@
     riot.store.on('set-heading', function(param) {
         var heading = param.heading;
         if (heading) {
-            $('#heading').text('TFB Data Visualiser - ' + heading)
+            $('#heading').text('TFB Insight - ' + heading)
         } else {
-            $('#heading').text('TFB Data Visualiser')
+            $('#heading').text('TFB Insight')
         }
     })
 </script>

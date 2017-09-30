@@ -107,6 +107,7 @@ public class Analyser extends LogSupport {
             }
         }
         project.calculateDensity();
+        project.updateColors();
     }
 
     private String testKey(String framework, Test test) {

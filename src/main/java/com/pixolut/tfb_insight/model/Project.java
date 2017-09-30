@@ -112,10 +112,9 @@ public class Project extends MorphiaAdaptiveRecord<Project> {
         }
         this.classification = this.tests.get(0).classification;
         this.technology = findTechnologyByLanguage(language);
-        this.updateColors();
     }
 
-    private void updateColors() {
+    public void updateColors() {
         this.color = ColorCaculator.colorOf(this);
         for (Test test : tests) {
             test.color = ColorCaculator.colorOf(this, test);

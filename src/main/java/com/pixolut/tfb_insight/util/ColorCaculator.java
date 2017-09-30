@@ -2,6 +2,7 @@ package com.pixolut.tfb_insight.util;
 
 import com.pixolut.tfb_insight.model.Project;
 import com.pixolut.tfb_insight.model.Test;
+import org.osgl.$;
 import org.osgl.util.S;
 
 /**
@@ -68,9 +69,13 @@ public class ColorCaculator {
         if (null == density) {
             density = 0.1f;
         }
-        int r = rgbOf(project.framework.hashCode() + project.language.hashCode() * density);
-        int g = rgbOf(project.framework.hashCode() * project.technology.hashCode());
-        int b = rgbOf(density * project.loc + project.framework.hashCode());
+        int tests = 0;
+        for (Test test : project.tests) {
+            tests += test.results.size();
+        }
+        int r = rgbOf($.hc(project.framework.hashCode()));
+        int g = rgbOf($.hc(tests, project.loc, density));
+        int b = rgbOf($.hc(project.loc, density, project.framework));
         return S.fmt("rgb(%s, %s, %s)", r, g, b);
     }
 
@@ -86,7 +91,15 @@ public class ColorCaculator {
     }
 
     private static int rgbOf(Object obj) {
-        return 55 + Math.abs(obj.hashCode() % 200);
+        int hc = Math.abs(obj.hashCode());
+        int n = Math.abs(hc % 350);
+        if (n > 255) {
+            n = 255 - (n - 255) / 3;
+        }
+        if (n < 1) {
+            n = hc % 255 + 1;
+        }
+        return n;
     }
 
 }
