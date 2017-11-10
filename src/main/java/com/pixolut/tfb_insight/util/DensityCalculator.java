@@ -46,6 +46,7 @@ public class DensityCalculator {
         if (project.loc < 0) {
             return -1.0f;
         }
+        int testCount = 0;
         float totalWeight = 0;
         int json = 0;
         int plaintext = 0;
@@ -67,9 +68,11 @@ public class DensityCalculator {
                     typeAndDb.add(key);
                 }
                 totalWeight += type.densityWeight();
+                testCount++;
                 counted = true;
             }
         }
+        project.testCount = testCount;
         return !counted ? -1.0f : totalWeight * 100F / project.loc;
     }
 

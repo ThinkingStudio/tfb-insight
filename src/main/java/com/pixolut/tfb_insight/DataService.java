@@ -30,19 +30,19 @@ public class DataService extends LogSupport {
 
     /**
      * Get framework list indexed by language
-     * @return
-     *      framework list indexed by language
+     *
+     * @return framework list indexed by language
      */
     @GetAction("framework")
     @CacheFor
     public Map<String, SortedSet<String>> frameworkListByLanguage() {
         SortedMap<String, SortedSet<String>> retVal = new TreeMap<>((o1, o2) -> {
-                if (o1.equals("Others")) {
-                    return 1;
-                } else if (o2.equals("Others")) {
-                    return -1;
-                }
-                return o1.compareTo(o2);
+            if (o1.equals("Others")) {
+                return 1;
+            } else if (o2.equals("Others")) {
+                return -1;
+            }
+            return o1.compareTo(o2);
         });
         Map<String, Integer> counter = new HashMap<>();
         for (Project project : projectDao.q()) {
@@ -73,8 +73,7 @@ public class DataService extends LogSupport {
     /**
      * Query chart data for top N
      *
-     * @return
-     *      top N chart data
+     * @return top N chart data
      */
     @GetAction("chart/framework")
     @CacheFor
@@ -111,7 +110,7 @@ public class DataService extends LogSupport {
             if (null == best._2) {
                 continue;
             }
-            String backgroundColor =  best._1.color;
+            String backgroundColor = best._1.color;
             String borderColor = ColorCaculator.colorOfClassification(project.classification);
             String label = test.label(project, best._1);
             chartData.put(best._2.throughput(), $.T3(label, backgroundColor, borderColor));
@@ -128,8 +127,7 @@ public class DataService extends LogSupport {
     /**
      * Query chart data for language benchmark
      *
-     * @return
-     *      chart language benchmark data
+     * @return chart language benchmark data
      */
     @GetAction("chart/language")
     @CacheFor
@@ -141,13 +139,17 @@ public class DataService extends LogSupport {
         ChartData data = new ChartData(benchmarks.map((lb) -> lb.language));
         data.datasets = new ArrayList<>();
 
-        List<String> medianColors = benchmarks.map((lb) -> {return ColorCaculator.colorOf(lb.language, false);});
+        List<String> medianColors = benchmarks.map((lb) -> {
+            return ColorCaculator.colorOf(lb.language, false);
+        });
         ChartData.Dataset avg = new ChartData.Dataset("median", benchmarks.map((lb) -> lb.median), medianColors);
         avg.test = test.name();
         data.datasets.add(avg);
         avg.type = "bar";
 
-        List<String> topColors = benchmarks.map((lb) -> {return ColorCaculator.colorOf(lb.language, true);});
+        List<String> topColors = benchmarks.map((lb) -> {
+            return ColorCaculator.colorOf(lb.language, true);
+        });
         ChartData.Dataset top = new ChartData.Dataset("top", benchmarks.map((lb) -> lb.top), topColors);
         top.test = test.name();
         top.type = "line";
@@ -235,6 +237,8 @@ public class DataService extends LogSupport {
         LanguageBenchmark langDensity = langDao.findOneBy("test,language", TestType.density, project.language);
         Map<String, Float> densityInfo = new HashMap<>();
         if (null != langDensity) {
+            densityInfo.put("loc", (float) project.loc);
+            densityInfo.put("tests", (float) project.testCount);
             densityInfo.put("framework", project.density);
             densityInfo.put("langMedian", langDensity.median);
             densityInfo.put("langTop", langDensity.top);

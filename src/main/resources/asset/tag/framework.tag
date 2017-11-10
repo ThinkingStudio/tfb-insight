@@ -16,6 +16,10 @@
         <div class="section code-density" if="{densityInfo && densityInfo.framework}">
             <h3><i class="fa fa-binoculars"></i> Code density analysis</h3>
             <br>
+            <div style="font-family: 'Courier New', monospaced; font-size: 80%; font-weight: 700; line-height: 1.6em;">
+                <div>Lines of Code &nbsp;: <u>{densityInfo.loc}</u></div>
+                <div>Number of Tests: <u>{densityInfo.tests}</u><sup>*</sup></div>
+            </div>
             <table>
                 <thead>
                 <tr>
@@ -45,6 +49,10 @@
                     is relatively less expressive framework/platform. It might takes more lines
                     of code to develop application using <b>{_.capitalize(framework)}</b>
                 </virtual>
+            </p>
+            <p style="font-size: 60%">
+                <b>Note *:&nbsp;</b>
+                <code>number of tests = number of JSON/plaintext tests + (number of db tests) * number of database supported</code>
             </p>
         </div>
         <div class="section tests">

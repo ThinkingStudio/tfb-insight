@@ -42,6 +42,7 @@ public class Project extends MorphiaAdaptiveRecord<Project> {
     public Test.Classification classification;
     public Technology technology;
     public int loc;
+    public int testCount;
     public String language;
     public String projectRoot;
     public String color;
