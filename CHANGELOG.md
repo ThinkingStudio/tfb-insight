@@ -1,5 +1,8 @@
 # CHANGE LOG
 
+1.1.3 (12/Nov/2017)
+* Fix "riotjs.js:2 Cannot read property 'version' of undefined" issue on page loading up
+
 1.1.2 (12/Nov/2017)
 * Add google analytics
 * Display version info

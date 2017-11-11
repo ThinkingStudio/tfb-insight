@@ -30,7 +30,13 @@
 
         var r = route.create()
         r("framework/*", function(framework) {
-            self._viewFramework(framework)
+            if (!self.languageLookup[framework]) {
+                setTimeout(function() {
+                    self._viewFramework(framework)
+                }, 200);
+            } else {
+                self._viewFramework(framework)
+            }
         });
 
 

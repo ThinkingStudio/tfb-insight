@@ -17,7 +17,10 @@
 </style>
 <script>
 var self = this
-self.version = {}
+self.version = {
+    app: {},
+    act: {}
+}
 
 self.on('mount', function() {
     $.getJSON('/~/version', function(version) {
