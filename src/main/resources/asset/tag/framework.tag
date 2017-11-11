@@ -202,7 +202,6 @@
                     };
                     var ctx = document.getElementById("chart-" + db);
                     if (!ctx) {
-                        console.log('cannot find html element by chart-' + db)
                         return
                     }
                     if (ctx.chart) {

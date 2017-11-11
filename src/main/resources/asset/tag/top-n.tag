@@ -210,7 +210,7 @@
                     var id = label.indexOf(']')
                     if (id < 0) {
                         // it must be a language bar
-                        route('top_n/' + label.toLowerCase())
+                        route('top/' + label.toLowerCase())
                         return
                     }
                     var id2 = label.indexOf('|')
@@ -222,7 +222,6 @@
         })
 
         riot.store.on('open', function(param) {
-            console.log(param)
             if (param.view === 'top-n') {
                 self.filter = param.filter
                 self.update()

@@ -97,11 +97,18 @@
                 var filter = self.filters[i]
                 if (filter.key === key) {
                     self.currentFilter = filter
-                    riot.store.trigger('open', {view: 'top-n', filter: self.currentFilter});
+                    riot.store.trigger('open', {view: 'top-n', filter: self.currentFilter})
                     self.update()
                     return
                 }
             }
+            filter = {
+                label: key,
+                language: key,
+                key: key
+            }
+            self.currentFilter = filter
+            riot.store.trigger('open', {view: 'top-n', filter: self.currentFilter})
         }
     </script>
 </nav-top-n>

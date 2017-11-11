@@ -93,7 +93,7 @@ public class DataService extends LogSupport {
             query.filter("framework in", frameworks);
         }
         if (S.notBlank(language)) {
-            query.filter("language", language);
+            query.filter("language", Pattern.compile(S.concat("^", language, "$"), Pattern.CASE_INSENSITIVE));
         } else if (S.notBlank(technology)) {
             query.filter("technology", technology);
         }
