@@ -92,7 +92,8 @@
         riot.observable(this)
     }
     riot.store = new Store()
-    riot.mount('*');
+    riot.mount('*')
+    route.start(true)
     riot.store.on('set-heading', function(param) {
         var heading = param.heading;
         if (heading) {

@@ -16,50 +16,81 @@
             {
                 label: 'Java Fullstack/Micro frameworks',
                 language: 'Java',
-                classification: '(Fullstack|Micro)'
+                classification: '(Fullstack|Micro)',
+                key: 'java-full_micro'
             },
             {
                 label: 'Java frameworks',
-                language: 'Java'
+                language: 'Java',
+                key: 'java'
             },
             {
                 label: 'PHP frameworks',
-                language: 'PHP'
+                language: 'PHP',
+                key: 'php'
             },
             {
                 label: 'Python frameworks',
-                language: 'Python'
+                language: 'Python',
+                key: 'python'
             },
             {
                 label: 'Ruby frameworks',
-                language: 'Ruby'
+                language: 'Ruby',
+                key: 'ruby'
             },
             {
                 label: 'Scala frameworks',
-                language: 'Scala'
+                language: 'Scala',
+                key: 'scala',
+            },
+            {
+                label: 'Kotlin frameworks',
+                language: 'Kotlin',
+                key: 'kotlin',
             },
             {
                 label: 'Go frameworks',
-                language: 'Go'
+                language: 'Go',
+                key: 'go'
             },
             {
                 label: 'JVM frameworks',
-                technology: 'JVM'
+                technology: 'JVM',
+                key: 'jvm'
             },
             {
                 label: '.Net frameworks',
-                technology: 'DOT_NET'
+                technology: 'DOT_NET',
+                key: 'dot_net'
             },
             {
                 label: 'Language Insight',
-                target: 'language'
+                target: 'language',
+                key: 'languages'
             }
         ]
         self.currentFilter = false
 
+        var r = route.create()
+        r("top_n/*", function(key) {
+            self._selectFilter(key)
+        });
+
         selectFilter(e) {
-            self.currentFilter = e.item.filter
-            riot.store.trigger('open', {view: 'top-n', filter: self.currentFilter});
+            route('top_n/' + e.item.filter.key)
+        }
+
+        _selectFilter(key) {
+            for (var i = 0, j = self.filters.length; i < j; ++i) {
+                var filter = self.filters[i]
+                if (filter.key === key) {
+                    self.currentFilter = filter
+                    riot.store.trigger('open', {view: 'top-n', filter: self.currentFilter});
+                    self.update()
+                    return
+                }
+            }
         }
     </script>
 </nav-top-n>

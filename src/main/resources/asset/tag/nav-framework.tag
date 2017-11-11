@@ -19,13 +19,26 @@
     <script>
         var self = this
         self.frameworks = {}
+        self.languageLookup = {}
         self.currentLanguage = false
         self.currentFramework = false
+
+        var r = route.create()
+        r("framework/*", function(framework) {
+            self._viewFramework(framework)
+        });
+
+
         self.on('mount', function() {
             self.fetchFrameworks()
         })
         fetchFrameworks() {
             $.getJSON('/api/v1/framework', function(data) {
+                $.each(data, function(lang, frameworks) {
+                    for (var i = 0, j = frameworks.length; i < j; ++i) {
+                        self.languageLookup[frameworks[i]] = lang
+                    }
+                });
                 self.frameworks = data
                 self.update()
             })
@@ -38,7 +51,11 @@
             }
         }
         viewFramework(e) {
-            self.currentFramework = e.item.framework
+            route('framework/' + e.item.framework)
+        }
+        _viewFramework(framework) {
+            self.currentFramework = framework
+            self.currentLanguage = self.languageLookup[framework]
             riot.store.trigger('open', {view: 'framework', framework: self.currentFramework, language: self.currentLanguage});
         }
     </script>

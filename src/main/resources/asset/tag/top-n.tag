@@ -210,13 +210,13 @@
                     var id = label.indexOf(']')
                     if (id < 0) {
                         // it must be a language bar
-                        riot.store.trigger('open', {view: 'top-n', filter: {language: label, label: label + ' frameworks'}})
+                        route('top_n/' + label.toLowerCase())
                         return
                     }
                     var id2 = label.indexOf('|')
                     var language = label.substring(1, id)
                     var framework = label.substring(id + 2, id2 - 1)
-                    riot.store.trigger('open', {view: 'framework', framework: framework, language: language})
+                    route('framework/' + framework.toLowerCase())
                 }
             }
         })
