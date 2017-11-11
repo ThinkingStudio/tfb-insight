@@ -83,10 +83,15 @@ public class DataService extends LogSupport {
             String technology,
             String classification,
             String orm,
+            String vsKey,
             @DefaultValue("20") Integer top
     ) {
         MorphiaQuery<Project> query = projectDao.q();
         query = test.applyTo(query);
+        if (S.notBlank(vsKey)) {
+            List<String> frameworks = S.fastSplit(vsKey, ":");
+            query.filter("framework in", frameworks);
+        }
         if (S.notBlank(language)) {
             query.filter("language", language);
         } else if (S.notBlank(technology)) {

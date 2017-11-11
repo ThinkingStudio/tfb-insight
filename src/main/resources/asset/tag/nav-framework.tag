@@ -1,6 +1,10 @@
 <nav-framework>
-    <div class="heading"><i class="fa fa-institution"></i>&nbsp;Frameworks</div>
-    <ul class="language-list menu">
+    <div class="heading pointer" onclick="{toggleDisplay}">
+        <i class="fa fa-institution"></i>&nbsp;Frameworks
+        <i class="fa fa-angle-right" if="{collapsed}"></i>
+        <i class="fa fa-angle-up" if="{!collapsed}"></i>
+    </div>
+    <ul class="language-list menu nav-framework" if="{!collapsed}">
         <li each="{frameworkList, language in frameworks}" class="{language} {current: currentLanguage === language}" >
             <div class="language" onclick="{toggleLanguage}">
                 <i class="fa fa-folder" if="{currentLanguage !== language}"></i>
@@ -22,6 +26,7 @@
         self.languageLookup = {}
         self.currentLanguage = false
         self.currentFramework = false
+        self.collapsed = true
 
         var r = route.create()
         r("framework/*", function(framework) {
@@ -42,6 +47,9 @@
                 self.frameworks = data
                 self.update()
             })
+        }
+        toggleDisplay() {
+            self.collapsed = !self.collapsed
         }
         toggleLanguage(e) {
             if (e.item.language !== self.currentLanguage) {

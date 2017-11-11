@@ -222,6 +222,7 @@
         })
 
         riot.store.on('open', function(param) {
+            console.log(param)
             if (param.view === 'top-n') {
                 self.filter = param.filter
                 self.update()

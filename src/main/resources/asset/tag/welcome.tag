@@ -30,14 +30,14 @@
             <div class="a">
                 <p>Code density is a measurement to help see how expressive it is to code application using the frameework/platform. </p>
                 <p>
-                    Code density is calculated using the following approache:
+                    Code density is calculated using the following approach:
                 </p>
-                <pre>code_density=Sigma(num-of-test-for-type * weight-of-type) / loc * 100</pre>
+                <code>code_density = Sigma(num-of-test-for-type * weight-of-type) / loc * 100</code>
                 <p>
                     Where the weight of test type is arbitrarily determined as:
                 </p>
                 <ul>
-                    <li>plaintext - 1</li>
+                    <li>plaintext - 1.0</li>
                     <li>json - 1.2</li>
                     <li>db - 2.0</li>
                     <li>query - 2.2</li>

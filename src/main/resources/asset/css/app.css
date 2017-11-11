@@ -68,6 +68,9 @@ label {
 input, button, select {
     padding: 3px 8px;
 }
+.pointer {
+    cursor: pointer;
+}
 ul {
     padding: 0;
     list-style-type: none;

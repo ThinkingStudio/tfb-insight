@@ -1,10 +1,12 @@
 <nav-top-n>
-    <div class="heading">
-        <i class="fa fa-sort-amount-desc "></i>
+    <div class="heading pointer" onclick="{toggleDisplay}">
+        <i class="fa fa-sort-amount-desc"></i>
         &nbsp;
         Top N
+        <i class="fa fa-angle-right" if="{collapsed}"></i>
+        <i class="fa fa-angle-up" if="{!collapsed}"></i>
     </div>
-    <ul class="top-n-list menu">
+    <ul class="top-n-list menu nav-top-n" if="{!collapsed}">
         <li each="{filter in filters}"  onclick="{selectFilter}" class="{current: currentFilter === filter}">
             <i class="fa fa-bar-chart"></i>
             {filter.label}
@@ -12,7 +14,12 @@
     </ul>
     <script>
         var self = this
+        self.collapsed = false
         self.filters = [
+            {
+                label: 'Cross Languages',
+                key: 'cross-languages'
+            },
             {
                 label: 'Java Fullstack/Micro frameworks',
                 language: 'Java',
@@ -71,6 +78,10 @@
             }
         ]
         self.currentFilter = false
+
+        toggleDisplay() {
+            self.collapsed = !self.collapsed
+        }
 
         var r = route.create()
         r("top/*", function(key) {

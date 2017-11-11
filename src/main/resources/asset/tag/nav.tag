@@ -2,6 +2,9 @@
     <nav-top-n></nav-top-n>
     <br/>
     <nav-framework></nav-framework>
+    <br/>
+    <nav-vs></nav-vs>
+    <br/>
     <div class="heading pointer about" onclick="{showAbout}">
         <i class="fa fa-info"></i>
         &nbsp;
@@ -19,8 +22,12 @@
         }
     </style>
     <script>
-        showAbout() {
+        var r = route.create()
+        r('about', function() {
             riot.store.trigger('open', {view: 'welcome'})
+        })
+        showAbout() {
+            route('about')
         }
     </script>
 </nav>
