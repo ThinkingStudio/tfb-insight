@@ -1,4 +1,5 @@
 <app>
+    <version></version>
     <nav></nav>
     <main></main>
     <style>

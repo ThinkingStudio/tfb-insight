@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+1.1.2 (12/Nov/2017)
+* Add google analytics
+* Display version info
+
 1.1.1 (11/Nov/2017)
 * fix issue with navigating from Language Insight to Language Top N by clicking on bar chart
 
