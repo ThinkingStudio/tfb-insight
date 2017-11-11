@@ -73,12 +73,12 @@
         self.currentFilter = false
 
         var r = route.create()
-        r("top_n/*", function(key) {
+        r("top/*", function(key) {
             self._selectFilter(key)
         });
 
         selectFilter(e) {
-            route('top_n/' + e.item.filter.key)
+            route('top/' + e.item.filter.key)
         }
 
         _selectFilter(key) {

@@ -93,7 +93,6 @@
     }
     riot.store = new Store()
     riot.mount('*')
-    route.start(true)
     riot.store.on('set-heading', function(param) {
         var heading = param.heading;
         if (heading) {
@@ -102,6 +101,8 @@
             $('#heading').text('TFB Insight')
         }
     })
+    route.start(true)
+    route.exec()
 </script>
 </body>
 </html>
