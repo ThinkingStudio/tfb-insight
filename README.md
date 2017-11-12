@@ -1,6 +1,10 @@
 # TFB Insight
 
-This application read and analyse [TechEmpower Benchmark project](https://github.com/TechEmpower/FrameworkBenchmarks/) data and provides visual insight into them 
+This application read and analyse [TechEmpower Benchmark project](https://github.com/TechEmpower/FrameworkBenchmarks/) data and provides visual insight into them.
+
+## Product website:
+
+[tfb-insight.thinking.group](http://tfb-insight.thinking.group)
 
 ## Prerequisite
 
