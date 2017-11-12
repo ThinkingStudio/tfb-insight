@@ -2,9 +2,6 @@
     <p>
         TFB Insight is an application that analyse <a href="https://www.techempower.com/benchmarks/previews/round15/">TechEmpower Framework Benchmark</a> data and provides more insight into it.
     </p>
-    <p>
-        Please use left navigation bar to explore
-    </p>
     <div class="faq">
         <h4>FAQ</h4>
         <section>
@@ -45,6 +42,15 @@
                     <li>fortune - 2.2</li>
                 </ul>
             </div>
+        </section>
+        <section>
+            <div class="q">Is TFB Insight an Opensource project?</div>
+            <div class="a">
+                <p>Yes, TFB Insight is an Opensource project. You can find the source code from the following repositories:</p>
+                <ul>
+                    <li>Github: <a href="https://github.com/ThinkingStudio/tfb-insight">https://github.com/ThinkingStudio/tfb-insight</a></li>
+                    <li>Gitee: <a href="https://gitee.com/greenlaw110/tfb-insight">https://gitee.com/greenlaw110/tfb-insight</a></li>
+                </ul>
         </section>
     </div>
     <p>
