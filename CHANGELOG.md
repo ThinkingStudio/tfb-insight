@@ -1,5 +1,8 @@
 # CHANGE LOG
 
+1.1.5 (12/Nov/2017)
+* Fix multiple framework comparison header issue
+
 1.1.4 (12/Nov/2017)
 * Fix page title
 * Add GA event tracking for view topN, framework and vs pages

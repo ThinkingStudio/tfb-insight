@@ -91,7 +91,7 @@
                 }
             }
             var filter = {
-                label: key.replace(":", " vs "),
+                label: key.replace(/:/g, ' vs '),
                 key: key
             }
             self.currentFilter = filter
