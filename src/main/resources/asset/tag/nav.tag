@@ -29,5 +29,6 @@
         showAbout() {
             route('about')
         }
+        this.on('mount', route.exec)
     </script>
 </nav>
