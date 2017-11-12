@@ -4,7 +4,7 @@ This application read and analyse [TechEmpower Benchmark project](https://github
 
 ## Product website:
 
-[tfb-insight.thinking.group](http://tfb-insight.thinking.group)
+[tfb-insight.thinking.studio](http://tfb-insight.thinking.studio)
 
 ## Prerequisite
 
