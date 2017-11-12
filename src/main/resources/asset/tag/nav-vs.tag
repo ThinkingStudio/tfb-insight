@@ -65,6 +65,10 @@
 
         var r = route.create()
         r("vs/*", function(key) {
+            gtag('event', 'view_vs', {
+                event_label: key,
+                items: key.split(':')
+            })
             self._selectFilter(key)
         });
 

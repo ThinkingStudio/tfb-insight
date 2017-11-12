@@ -30,6 +30,10 @@
 
         var r = route.create()
         r("framework/*", function(framework) {
+            gtag('event', 'view_framework', {
+                event_label: framework,
+                item: framework
+            })
             if (!self.languageLookup[framework]) {
                 setTimeout(function() {
                     self._viewFramework(framework)

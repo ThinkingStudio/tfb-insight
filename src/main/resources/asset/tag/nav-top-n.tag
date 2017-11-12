@@ -85,6 +85,10 @@
 
         var r = route.create()
         r("top/*", function(key) {
+            gtag('event', 'view_top', {
+                event_label: key,
+                item: key
+            })
             self._selectFilter(key)
         });
 

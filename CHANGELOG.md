@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+1.1.4 (12/Nov/2017)
+* Fix page title
+* Add GA event tracking for view topN, framework and vs pages
+
 1.1.3 (12/Nov/2017)
 * Fix "riotjs.js:2 Cannot read property 'version' of undefined" issue on page loading up
 * Delayed route.exec to make it effective on prod site
