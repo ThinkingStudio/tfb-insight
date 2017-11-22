@@ -48,7 +48,7 @@
     <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>
     <logback.version>1.2.3</logback.version>
     <osgl-ut.version>1.0.1</osgl-ut.version>
-    <act.version>1.4.15-SNAPSHOT</act.version>
+    <act.version>1.5.3</act.version>
     <act-morphia.version>1.2.2</act-morphia.version>
 
     <app.entry>com.pixolut.tfb_insight.AppEntry</app.entry>
